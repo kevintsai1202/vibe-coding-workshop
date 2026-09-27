@@ -1,0 +1,101 @@
+<!doctype html>
+<!--
+  index.html — 教學網站外殼
+  內容全部在 course-data.js（window.COURSE），畫面與互動在 app.js，樣式在 style.css。
+  本機預覽請用 npm run serve（file:// 下無法預覽素材）。
+-->
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>生成式AI程式開發與Vibe Coding實務｜教學網站</title>
+  <meta name="description" content="工研院產業學院 6 小時課程：用 ChatGPT 桌面版指揮 AI，把教育訓練報名簽到的需求做成一個能用的小系統。" />
+  <script>
+    // 先套用上次選的主題，避免頁面先閃一下淺色
+    try {
+      var saved = JSON.parse(localStorage.getItem('vibe-tn-20261021-v1') || '{}');
+      if (saved.theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    } catch (e) { /* localStorage 不可用時維持淺色 */ }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到主要內容</a>
+  <div class="app" id="app">
+
+    <!-- 側欄：課程導覽與進度 -->
+    <aside class="sidebar" id="sidebar" aria-label="課程導覽">
+      <div class="brand">
+        <div class="brand-eyebrow">工研院產業學院｜台南學習中心</div>
+        <div class="brand-title">生成式AI程式開發與Vibe Coding實務</div>
+        <div class="brand-meta" id="brandMeta"></div>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="nav-progress" id="navProgress"></div>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- 主內容 -->
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn" id="menuToggle" type="button" aria-label="開關課程導覽" aria-controls="sidebar">☰</button>
+        <div class="topbar-trail" id="topbarTrail"></div>
+        <div class="topbar-tools">
+          <div class="zoom-group" role="group" aria-label="內容縮放">
+            <button class="icon-btn" id="zoomOut" type="button" aria-label="縮小字級">A−</button>
+            <span class="zoom-label" id="zoomLabel">100%</span>
+            <button class="icon-btn" id="zoomIn" type="button" aria-label="放大字級">A+</button>
+          </div>
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="切換深色／淺色">🌙</button>
+        </div>
+      </header>
+
+      <div class="content" id="content" tabindex="-1">
+        <noscript><p>這個網站需要開啟 JavaScript 才能顯示課程內容。</p></noscript>
+      </div>
+
+      <footer class="footer">
+        <p>主辦：財團法人工業技術研究院產業學院｜本教材嚴禁轉印、轉送、轉傳、分享他人。</p>
+        <p>課程中的晴川醫院、人物與資料皆為虛構，僅供教學練習。</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- 素材預覽彈窗 -->
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle"></div>
+        <button class="btn btn-soft" id="modalCopy" type="button">複製全文</button>
+        <a class="btn btn-soft" id="modalDownload" href="#" download>下載</a>
+        <button class="icon-btn" id="modalClose" type="button" aria-label="關閉">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div class="md-content" id="modalContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 貼上工具彈窗：iframe 內嵌 tool.html?embed=1，關掉後回到原本讀到的位置 -->
+  <div class="modal-backdrop tool-backdrop" id="toolBackdrop" hidden>
+    <div class="modal tool-modal" role="dialog" aria-modal="true" aria-labelledby="toolTitle">
+      <div class="modal-head">
+        <div class="modal-title" id="toolTitle">🛠 貼上工具</div>
+        <span class="muted tool-hint">關掉後會回到原本讀到的地方，貼上的內容會保留</span>
+        <a class="btn btn-ghost" id="toolNewTab" href="tool.html" target="_blank" rel="noopener">另開分頁</a>
+        <button class="icon-btn" id="toolClose" type="button" aria-label="關閉貼上工具">✕</button>
+      </div>
+      <iframe class="tool-frame" id="toolFrame" title="貼上工具" allow="clipboard-read; clipboard-write"></iframe>
+    </div>
+  </div>
+
+  <!-- 提示訊息 -->
+  <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+  <script src="course-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

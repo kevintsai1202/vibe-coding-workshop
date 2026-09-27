@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>晴川醫院 教育訓練報名簽到表</title>
+<style>
+  /* ===== 版面與顏色 ===== */
+  :root { --blue: #3563d9; --green: #16a34a; --red: #dc2626; --line: #e5e7eb; --muted: #6b7280; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #f5f7fb; color: #1f2937;
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif; font-size: 16px;
+  }
+  header { background: var(--blue); color: white; padding: 18px 24px; }
+  header h1 { margin: 0; font-size: 24px; }
+  header p { margin: 4px 0 0; opacity: 0.85; font-size: 14px; }
+  main { max-width: 1040px; margin: 0 auto; padding: 20px 16px 48px; }
+  .card { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; }
+  .card h2 { margin: 0 0 12px; font-size: 19px; }
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
+  label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--muted); }
+  input, select { font: inherit; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px; color: #1f2937; }
+  .form-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .form-row input, .form-row select { flex: 1 1 140px; }
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid #cbd5e1; background: white; padding: 8px 14px; }
+  button.primary { background: var(--blue); border-color: var(--blue); color: white; font-weight: 700; }
+  button.link { border: 0; background: none; color: var(--muted); text-decoration: underline; padding: 0; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { background: #f8fafc; font-size: 14px; color: var(--muted); }
+  .roster-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .roster-head h2 { margin: 0; }
+  .checked { color: var(--green); font-weight: 700; }
+  .msg { padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-weight: 700; }
+  .msg.ok { background: #dcfce7; color: #166534; }
+  .msg.error { background: #fee2e2; color: #991b1b; }
+  .note { background: #fef3c7; color: #92400e; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; }
+  footer { text-align: center; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>晴川醫院 教育訓練報名簽到表</h1>
+    <p>課堂練習用｜醫院與人名皆為虛構｜資料存在這台電腦的瀏覽器</p>
+  </header>
+  <main>
+    <div id="msg" class="msg" role="status" hidden></div>
+    <p id="storageNote" class="note" hidden>預覽模式不會保存資料。下載成 signin.html 後用瀏覽器打開，資料才會保存。</p>
+
+    <section class="card">
+      <h2>新增課程</h2>
+      <div class="form-grid">
+        <label>課程名稱<input id="cTitle" placeholder="例如 感染管制教育訓練"></label>
+        <label>上課日期<input id="cDate" type="date"></label>
+        <label>開始時間<input id="cTime" type="time"></label>
+        <label>地點<input id="cLocation" placeholder="例如 第二會議室"></label>
+        <label>名額<input id="cCapacity" type="number" min="1" step="1"></label>
+        <label>時數<input id="cHours" type="number" min="0.5" step="0.5"></label>
+      </div>
+      <button id="btnAddCourse" class="primary">新增課程</button>
+    </section>
+
+    <section class="card">
+      <h2>課程清單</h2>
+      <div class="table-wrap">
+        <table id="courseTable">
+          <thead><tr><th>課程名稱</th><th>日期</th><th>時間</th><th>地點</th><th>報名</th><th>出席率</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" id="roster" hidden>
+      <div class="roster-head">
+        <h2 id="rosterTitle"></h2>
+        <button id="btnExport">匯出 CSV</button>
+      </div>
+      <div class="form-row">
+        <input id="eEmpNo" placeholder="員工編號，例如 E1006">
+        <input id="eName" placeholder="姓名">
+        <select id="eDept"></select>
+        <button id="btnEnroll" class="primary">報名</button>
+      </div>
+      <div class="table-wrap">
+        <table id="rosterTable">
+          <thead><tr><th>員工編號</th><th>姓名</th><th>單位</th><th>報名時間</th><th>簽到</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer><button id="btnReset" class="link">重設為示範資料</button></footer>
+  </main>
+
+<!-- sql.js 1.13.0：integrity 是 cdnjs 公布的檔案雜湊，檔案被竄改時瀏覽器會拒絕執行 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/sql-wasm.js" integrity="sha512-Yra4xuTWinXfBpG2ftgDX8MVmMiOev1FtqiYs51+kEna/5peD0kZqAL1syYCH61f9gxmAFidIJz42IKcRhWMkw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+/*
+ * 教育訓練報名簽到表 signin.html
+ * 基本版已完成：資料表、示範資料、新增課程、報名（名額已滿、重複報名、必填檢查）、保存與重設
+ * 功能插槽 1～3：簽到、出席率、匯出 CSV（學員請 AI 撰寫後，用教學網站的貼上工具組合）
+ */
+
+/* ===== 設定 ===== */
+// sql.js（瀏覽器版 SQLite）的載入位置
+const SQL_JS_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/';
+// 資料庫存在瀏覽器裡的名稱
+const STORAGE_KEY = 'qingchuan-signin-db-v1';
+// 單位清單（下拉選單）
+const DEPTS = ['護理部', '醫務部', '藥劑部', '檢驗科', '放射科', '總務室', '人資室', '資訊室', '教學研究部', '社工室'];
+
+/* ===== 狀態 ===== */
+let SQL = null;               // sql.js 函式庫
+let db = null;                // 資料庫
+let currentCourseId = null;   // 目前在看哪一堂課的名單
+let canSave = true;           // 這個環境能不能把資料存進瀏覽器
+
+/* ===== 共用工具（功能插槽可以直接使用） ===== */
+
+// 查詢資料：回傳物件陣列，例如 [{ id: 1, name: '陳美玲' }]
+function query(sql, params = []) {
+  const stmt = db.prepare(sql);
+  stmt.bind(params);
+  const rows = [];
+  while (stmt.step()) rows.push(stmt.getAsObject());
+  stmt.free();
+  return rows;
+}
+
+// 執行新增或修改（SQL 一律用 ? 參數，不把輸入接成字串）
+function run(sql, params = []) {
+  db.run(sql, params);
+}
+
+// 把整個資料庫存到瀏覽器（localStorage）
+function save() {
+  if (!canSave) return;
+  try {
+    const bytes = db.export();
+    let bin = '';
+    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    localStorage.setItem(STORAGE_KEY, btoa(bin));
+  } catch (e) {
+    canSave = false;
+    document.getElementById('storageNote').hidden = false;
+  }
+}
+
+// 顯示訊息：type 為 'ok'（綠色）或 'error'（紅色）
+function showMsg(text, type = 'ok') {
+  const box = document.getElementById('msg');
+  box.textContent = text;
+  box.className = 'msg ' + type;
+  box.hidden = false;
+}
+
+// 現在時間，格式 YYYY-MM-DD HH:MM
+function nowText() {
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+// 把文字裡的 HTML 符號轉成一般文字，避免被當成網頁程式執行（防 XSS）
+function esc(text) {
+  return String(text == null ? '' : text).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
+// 讓瀏覽器下載一個檔案
+function downloadFile(filename, content, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* ===== 資料庫 ===== */
+
+// 檢查瀏覽器能不能存資料（預覽模式或私密視窗可能不行）
+function storageAvailable() {
+  try {
+    localStorage.setItem('__test__', '1');
+    localStorage.removeItem('__test__');
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// 從瀏覽器讀回上次存的資料庫；沒有就回傳 null
+function loadSaved() {
+  try {
+    const b64 = localStorage.getItem(STORAGE_KEY);
+    if (!b64) return null;
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  } catch (e) {
+    return null;
+  }
+}
+
+// 建立兩張資料表：courses（課程）、enrollments（報名）
+function createTables() {
+  run(`CREATE TABLE IF NOT EXISTS courses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    date TEXT NOT NULL,
+    start_time TEXT NOT NULL,
+    location TEXT NOT NULL,
+    capacity INTEGER NOT NULL CHECK (capacity >= 1),
+    hours REAL NOT NULL CHECK (hours > 0)
+  )`);
+  run(`CREATE TABLE IF NOT EXISTS enrollments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    course_id INTEGER NOT NULL REFERENCES courses(id),
+    emp_no TEXT NOT NULL,
+    name TEXT NOT NULL,
+    dept TEXT NOT NULL,
+    enrolled_at TEXT NOT NULL,
+    checked_in_at TEXT,
+    UNIQUE (course_id, emp_no)
+  )`);
+}
+
+// 放入示範資料：兩堂課、六筆報名
+function seedDemo() {
+  run('INSERT INTO courses (title, date, start_time, location, capacity, hours) VALUES (?, ?, ?, ?, ?, ?)', ['消防安全講習', '2026-11-05', '14:00', '第一會議室', 40, 2]);
+  run('INSERT INTO courses (title, date, start_time, location, capacity, hours) VALUES (?, ?, ?, ?, ?, ?)', ['個資保護與資安宣導', '2026-11-12', '10:00', '教學大樓 3F 視聽室', 3, 1]);
+  const demo = [
+    [1, 'E1001', '陳美玲', '護理部', '2026-10-21 10:15', '2026-11-05 13:52'],
+    [1, 'E1002', '林志明', '總務室', '2026-10-21 10:16', null],
+    [1, 'E1003', '黃淑芬', '藥劑部', '2026-10-21 10:18', '2026-11-05 13:55'],
+    [1, 'E1004', '吳家豪', '資訊室', '2026-10-21 10:20', null],
+    [2, 'E1001', '陳美玲', '護理部', '2026-10-21 10:22', null],
+    [2, 'E1005', '許雅雯', '人資室', '2026-10-21 10:25', null]
+  ];
+  demo.forEach(row => run('INSERT INTO enrollments (course_id, emp_no, name, dept, enrolled_at, checked_in_at) VALUES (?, ?, ?, ?, ?, ?)', row));
+}
+
+/* ===== 第一步：新增課程、報名 ===== */
+
+// 新增課程：所有欄位必填，名額至少 1 人、時數大於 0
+function addCourse() {
+  const v = id => document.getElementById(id).value.trim();
+  const title = v('cTitle'), date = v('cDate'), time = v('cTime'), location = v('cLocation');
+  const capacity = Number(v('cCapacity')), hours = Number(v('cHours'));
+  if (!title || !date || !time || !location || !v('cCapacity') || !v('cHours')) {
+    showMsg('請填寫完整的課程資料', 'error');
+    return;
+  }
+  if (!Number.isInteger(capacity) || capacity < 1) {
+    showMsg('名額至少 1 人，而且要是整數', 'error');
+    return;
+  }
+  if (!(hours > 0)) {
+    showMsg('時數要大於 0', 'error');
+    return;
+  }
+  run('INSERT INTO courses (title, date, start_time, location, capacity, hours) VALUES (?, ?, ?, ?, ?, ?)', [title, date, time, location, capacity, hours]);
+  save();
+  ['cTitle', 'cDate', 'cTime', 'cLocation', 'cCapacity', 'cHours'].forEach(id => { document.getElementById(id).value = ''; });
+  render();
+  showMsg(`已新增課程「${title}」`);
+}
+
+// 報名：檢查必填與格式、名額已滿、重複報名
+function enroll() {
+  if (currentCourseId === null) {
+    showMsg('請先在課程清單按「查看名單」選一堂課', 'error');
+    return;
+  }
+  const empNo = document.getElementById('eEmpNo').value.trim().toUpperCase();
+  const name = document.getElementById('eName').value.trim();
+  const dept = document.getElementById('eDept').value;
+  if (!empNo || !name || !dept) {
+    showMsg('請填寫員工編號、姓名、單位', 'error');
+    return;
+  }
+  if (!/^E\d{4}$/.test(empNo)) {
+    showMsg('員工編號格式為 E 加 4 碼數字，例如 E1001', 'error');
+    return;
+  }
+  const course = query('SELECT title, capacity FROM courses WHERE id = ?', [currentCourseId])[0];
+  const count = query('SELECT COUNT(*) AS n FROM enrollments WHERE course_id = ?', [currentCourseId])[0].n;
+  if (count >= course.capacity) {
+    showMsg('名額已滿，無法報名', 'error');
+    return;
+  }
+  const dup = query('SELECT id FROM enrollments WHERE course_id = ? AND emp_no = ?', [currentCourseId, empNo]);
+  if (dup.length > 0) {
+    showMsg(`${empNo} 已報名過這堂課`, 'error');
+    return;
+  }
+  run('INSERT INTO enrollments (course_id, emp_no, name, dept, enrolled_at) VALUES (?, ?, ?, ?, ?)', [currentCourseId, empNo, name, dept, nowText()]);
+  save();
+  document.getElementById('eEmpNo').value = '';
+  document.getElementById('eName').value = '';
+  render();
+  showMsg(`${name} 已報名「${course.title}」`);
+}
+
+/* ===== 畫面 ===== */
+
+// 重畫整個畫面：課程清單與報名名單
+function render() {
+  renderCourses();
+  renderRoster();
+}
+
+// 課程清單：報名人數／名額、出席率、查看名單按鈕
+function renderCourses() {
+  const rows = query(`SELECT c.*, (SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id) AS enrolled
+                      FROM courses c ORDER BY c.date, c.start_time, c.id`);
+  document.querySelector('#courseTable tbody').innerHTML = rows.map(c => `
+    <tr>
+      <td>${esc(c.title)}</td>
+      <td>${esc(c.date)}</td>
+      <td>${esc(c.start_time)}</td>
+      <td>${esc(c.location)}</td>
+      <td>${c.enrolled} / ${c.capacity} 人</td>
+      <td>${esc(attendanceText(c.id))}</td>
+      <td><button data-view="${c.id}">查看名單</button></td>
+    </tr>`).join('') || '<tr><td colspan="7">還沒有課程</td></tr>';
+}
+
+// 報名名單：已簽到顯示時間，還沒簽到顯示「簽到」按鈕
+function renderRoster() {
+  const box = document.getElementById('roster');
+  const course = currentCourseId === null ? null : query('SELECT * FROM courses WHERE id = ?', [currentCourseId])[0];
+  if (!course) {
+    box.hidden = true;
+    return;
+  }
+  box.hidden = false;
+  document.getElementById('rosterTitle').textContent = `報名名單：${course.title}（${course.date} ${course.start_time}，${course.location}）`;
+  const people = query('SELECT * FROM enrollments WHERE course_id = ? ORDER BY id', [currentCourseId]);
+  document.querySelector('#rosterTable tbody').innerHTML = people.map(p => `
+    <tr>
+      <td>${esc(p.emp_no)}</td>
+      <td>${esc(p.name)}</td>
+      <td>${esc(p.dept)}</td>
+      <td>${esc(p.enrolled_at)}</td>
+      <td>${p.checked_in_at ? `<span class="checked">✔ ${esc(p.checked_in_at)}</span>` : `<button data-checkin="${p.id}">簽到</button>`}</td>
+    </tr>`).join('') || '<tr><td colspan="5">還沒有人報名</td></tr>';
+}
+
+/* ===== 功能插槽：第二步的三個功能 ===== */
+
+// ===== 功能插槽 1：簽到 checkIn（開始）=====
+// 簽到：【還沒做】請用功能卡 1 請 AI 寫出這個函式，貼到貼上工具的「功能插槽 1」
+function checkIn(enrollmentId) {
+  showMsg('「簽到」還沒做：請完成功能插槽 1', 'error');
+}
+// ===== 功能插槽 1：簽到 checkIn（結束）=====
+
+// ===== 功能插槽 2：出席率 attendanceText（開始）=====
+// 出席率：【還沒做】請用功能卡 2 請 AI 寫出這個函式，貼到貼上工具的「功能插槽 2」
+function attendanceText(courseId) {
+  return '（待完成）';
+}
+// ===== 功能插槽 2：出席率 attendanceText（結束）=====
+
+// ===== 功能插槽 3：匯出 CSV exportCsv（開始）=====
+// 匯出 CSV：【還沒做】請用功能卡 3 請 AI 寫出這個函式，貼到貼上工具的「功能插槽 3」
+function exportCsv(courseId) {
+  showMsg('「匯出 CSV」還沒做：請完成功能插槽 3', 'error');
+}
+// ===== 功能插槽 3：匯出 CSV exportCsv（結束）=====
+
+/* ===== 啟動 ===== */
+
+// 綁定按鈕：新增課程、報名、匯出、重設，以及清單裡的「查看名單」「簽到」
+function bindEvents() {
+  document.getElementById('btnAddCourse').addEventListener('click', addCourse);
+  document.getElementById('btnEnroll').addEventListener('click', enroll);
+  document.getElementById('btnExport').addEventListener('click', () => exportCsv(currentCourseId));
+  document.getElementById('btnReset').addEventListener('click', resetDemo);
+  document.addEventListener('click', e => {
+    const view = e.target.closest('[data-view]');
+    if (view) {
+      currentCourseId = Number(view.dataset.view);
+      render();
+      document.getElementById('roster').scrollIntoView?.({ behavior: 'smooth' });
+    }
+    const btn = e.target.closest('[data-checkin]');
+    if (btn) checkIn(Number(btn.dataset.checkin));
+  });
+}
+
+// 重設為示範資料（會清掉目前所有資料）
+function resetDemo() {
+  if (!confirm('要清掉目前所有資料，重設為示範資料嗎？')) return;
+  db = new SQL.Database();
+  createTables();
+  seedDemo();
+  save();
+  currentCourseId = null;
+  render();
+  showMsg('已重設為示範資料');
+}
+
+// 啟動：載入 sql.js、讀回上次的資料（沒有就放示範資料）、畫出畫面
+async function init() {
+  if (typeof initSqlJs !== 'function') {
+    showMsg('無法載入資料庫元件（sql.js），請確認有連上網路後重新整理。', 'error');
+    return;
+  }
+  try {
+    SQL = await initSqlJs({ locateFile: file => SQL_JS_BASE + file });
+    canSave = storageAvailable();
+    const saved = canSave ? loadSaved() : null;
+    db = saved ? new SQL.Database(saved) : new SQL.Database();
+    createTables();
+    if (!saved) {
+      seedDemo();
+      save();
+    }
+    document.getElementById('eDept').innerHTML = '<option value="">選擇單位</option>' + DEPTS.map(d => `<option>${esc(d)}</option>`).join('');
+    document.getElementById('storageNote').hidden = canSave;
+    bindEvents();
+    render();
+    document.body.dataset.ready = '1';
+  } catch (e) {
+    showMsg('資料庫啟動失敗：' + e.message, 'error');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

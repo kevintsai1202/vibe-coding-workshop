@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>下課休息倒數計時器</title>
+<style>
+  /* 版面：畫面置中、大字 */
+  body {
+    margin: 0; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+    background: #f5f7fb; color: #1f2937;
+    transition: background-color 0.4s;
+  }
+  /* 時間到：整個畫面變綠色 */
+  body.done { background: #16a34a; color: white; }
+  h1 { font-size: 28px; margin: 0 0 8px; }
+  .hint { color: #6b7280; margin: 0 0 16px; }
+  body.done .hint { color: #dcfce7; }
+  #display { font-size: min(28vw, 220px); font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  #doneMsg { font-size: 40px; font-weight: 800; margin-top: 8px; }
+  .buttons { margin-top: 16px; }
+  .buttons button {
+    font-size: 22px; padding: 12px 28px; margin: 6px;
+    border: 0; border-radius: 12px; cursor: pointer;
+    background: #3563d9; color: white;
+  }
+  .buttons button.secondary { background: #e5e7eb; color: #1f2937; }
+</style>
+</head>
+<body>
+  <h1>下課休息倒數計時器</h1>
+  <p class="hint">完成版：多了「5 分鐘」按鈕，時間到會變綠色。</p>
+  <div id="display">10:00</div>
+  <div id="doneMsg" hidden>休息結束，回座囉！</div>
+  <div class="buttons">
+    <button id="btnStart">開始</button>
+    <button id="btnPause" class="secondary">暫停</button>
+    <button id="btnReset" class="secondary">重設</button>
+    <button id="btn5min" class="secondary">5 分鐘</button>
+  </div>
+
+<script>
+  // 預設倒數秒數：10 分鐘
+  const DEFAULT_SECONDS = 10 * 60;
+  // 剩下的秒數
+  let remaining = DEFAULT_SECONDS;
+  // 倒數計時器的編號；null 表示目前沒有在倒數
+  let timer = null;
+  // 顯示時間的元素
+  const display = document.getElementById('display');
+
+  // 把剩下的秒數顯示成「分:秒」
+  function show() {
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+    display.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+
+  // 開始倒數（已經在倒數或時間到了就不重複開始）
+  function start() {
+    if (timer !== null || remaining <= 0) return;
+    timer = setInterval(tick, 1000);
+  }
+
+  // 每秒執行一次：減一秒，到 0 就停止並顯示時間到
+  function tick() {
+    remaining = remaining - 1;
+    show();
+    if (remaining <= 0) finish();
+  }
+
+  // 停止倒數
+  function stop() {
+    clearInterval(timer);
+    timer = null;
+  }
+
+  // 時間到：停止倒數，畫面變綠色並顯示提示文字
+  function finish() {
+    stop();
+    remaining = 0;
+    show();
+    document.body.classList.add('done');
+    document.getElementById('doneMsg').hidden = false;
+  }
+
+  // 清除時間到的畫面
+  function clearDone() {
+    document.body.classList.remove('done');
+    document.getElementById('doneMsg').hidden = true;
+  }
+
+  // 把倒數改成指定分鐘數（例如 5 分鐘）
+  function setMinutes(minutes) {
+    stop();
+    clearDone();
+    remaining = minutes * 60;
+    show();
+  }
+
+  // 重設回預設時間
+  function reset() {
+    setMinutes(DEFAULT_SECONDS / 60);
+  }
+
+  // 綁定按鈕
+  document.getElementById('btnStart').addEventListener('click', start);
+  document.getElementById('btnPause').addEventListener('click', stop);
+  document.getElementById('btnReset').addEventListener('click', reset);
+  document.getElementById('btn5min').addEventListener('click', () => setMinutes(5));
+  show();
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<!--
+  tool.html — 貼上工具：把 ChatGPT 在聊天裡寫好的程式變成檔案
+  整份檔案：貼上 → 預覽 → 下載（timer.html、spec.md…）
+  功能插槽：把 AI 寫的函式貼進 signin 基本版預留的位置 → 自動組合 → 預覽 → 下載 signin.html
+  預覽一律放在沙箱 iframe（不給 allow-same-origin），貼上的程式碰不到本網站的資料。
+-->
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>貼上工具｜生成式AI程式開發與Vibe Coding實務</title>
+  <script>
+    // 被嵌在教學頁彈窗裡時（?embed=1）先套上 embed 樣式
+    if (/[?&]embed=1(&|$)/.test(location.search)) document.documentElement.classList.add('embed');
+    // 沿用教學網站選的主題
+    try {
+      var saved = JSON.parse(localStorage.getItem('vibe-tn-20261021-v1') || '{}');
+      if (saved.theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    } catch (e) { /* localStorage 不可用時維持淺色 */ }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="tool-page">
+  <header class="topbar tool-topbar">
+    <a class="btn btn-ghost" href="index.html">← 回教學網站</a>
+    <div class="topbar-trail">貼上工具：把 AI 的程式變成檔案</div>
+    <button class="icon-btn" id="themeToggle" type="button" aria-label="切換深色／淺色">🌙</button>
+  </header>
+
+  <main class="content tool-content">
+    <h1>貼上工具</h1>
+    <p class="lead">ChatGPT 在聊天裡寫好的程式，貼到這裡就能預覽、下載成檔案。不用記事本，也不會存錯編碼或副檔名。</p>
+
+    <div class="tabs" role="tablist" aria-label="工具模式">
+      <button class="tab" role="tab" type="button" data-tab="whole" aria-selected="true">整份檔案</button>
+      <button class="tab" role="tab" type="button" data-tab="slots" aria-selected="false">功能插槽（報名簽到表）</button>
+    </div>
+
+    <!-- 整份檔案 -->
+    <section class="tool-panel" id="tab-whole" role="tabpanel">
+      <ol class="num-list">
+        <li>選一個範本按「載入範本」，或把 AI 回傳的<strong>完整</strong>程式貼到下面的框。</li>
+        <li>按「預覽」確認能用；ChatGPT 回覆裡的 <code>```</code> 框線與前後說明會自動去掉。</li>
+        <li>確認檔名後按「下載」，再把檔案從「下載」資料夾移到桌面的 <code>AI實作</code> 資料夾。</li>
+      </ol>
+      <div class="tool-row">
+        <label class="tool-field">範本
+          <select id="tplSelect"><option value="">（選擇範本）</option></select>
+        </label>
+        <button class="btn btn-soft" id="btnLoadTpl" type="button">載入範本</button>
+        <label class="tool-field">檔名
+          <input id="fileName" value="timer.html" spellcheck="false">
+        </label>
+      </div>
+      <textarea id="wholeText" class="tool-text" spellcheck="false" placeholder="把 AI 回傳的完整程式（或 spec.md 全文）貼在這裡"></textarea>
+      <div class="note note-warn" id="wholeWarn" hidden></div>
+      <div class="tool-actions">
+        <button class="btn btn-soft" id="btnCopyWhole" type="button">複製程式碼</button>
+        <button class="btn" id="btnPreviewWhole" type="button">預覽</button>
+        <button class="btn" id="btnDownloadWhole" type="button">下載</button>
+        <button class="btn btn-ghost" id="btnClearWhole" type="button">清空</button>
+      </div>
+      <iframe class="tool-preview" id="wholePreview" title="預覽" sandbox="allow-scripts allow-modals allow-downloads"></iframe>
+    </section>
+
+    <!-- 功能插槽 -->
+    <section class="tool-panel" id="tab-slots" role="tabpanel" hidden>
+      <ol class="num-list">
+        <li>每個插槽按「複製功能卡提示詞」，貼到 ChatGPT 一般聊天。</li>
+        <li>把 AI 回傳的函式貼到對應插槽的框（說明文字與 <code>```</code> 框線會自動去掉）。</li>
+        <li>按「組合並預覽」測試；三個都完成後按「下載 signin.html」，放進 <code>AI實作</code> 資料夾。</li>
+      </ol>
+      <p class="muted">預覽模式不會保存資料；下載後用瀏覽器打開，資料才會保存。卡住的插槽可以按「填入完成版」接著做。</p>
+      <div id="slotList"></div>
+      <div class="tool-actions">
+        <button class="btn" id="btnCombine" type="button">組合並預覽</button>
+        <button class="btn" id="btnDownloadSlots" type="button">下載 signin.html</button>
+        <button class="btn btn-ghost" id="btnClearSlots" type="button">全部清空</button>
+      </div>
+      <div class="note note-warn" id="slotWarn" hidden></div>
+      <iframe class="tool-preview tall" id="slotPreview" title="報名簽到表預覽" sandbox="allow-scripts allow-modals allow-downloads"></iframe>
+    </section>
+  </main>
+
+  <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+  <script src="course-data.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>
