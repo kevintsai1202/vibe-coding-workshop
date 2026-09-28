@@ -4,6 +4,8 @@
  * 讀取 window.COURSE（course-data.js），渲染所有章節，並處理：
  *   任務勾選、課堂互動題、提示詞複製、素材預覽彈窗、側欄導覽與 scrollspy、
  *   深色模式、內容縮放、手機版側欄。狀態存在 localStorage。
+ * 功能性動效（捲動進場、跳轉高亮、答題與打勾回饋、單元完成慶祝）也在這裡；
+ * 概念動畫示範由 demos.js（window.DEMOS）產生，這裡只負責把 `demo` 區塊接上去。
  * 安全原則：課程內容與素材一律用 DOM API + textContent 建構，不用 innerHTML。
  */
 (function () {
@@ -23,6 +25,13 @@
   const ZOOM_MIN = 0.9, ZOOM_MAX = 1.4, ZOOM_STEP = 0.1;
   /** 區塊種類的中文標籤 */
   const KIND_LABEL = { teach: '講授', lab: '實作', break: '休息', lunch: '午餐' };
+  /**
+   * 捲動進場的目標。預設狀態必須可見：進場只靠 style.css 的 .reveal-in（@keyframes），
+   * 不把 opacity:0 當靜止狀態，IntersectionObserver 沒回報時內容也完整
+   */
+  const REVEAL_SELECTOR = '.unit-hero, .seg-head, .deliver-card, .schema-card, .figure, .quiz-card, .prompt-card, .demo, .note';
+  /** 動效收尾時要移除的一次性 class（animationend 時從觸發事件的元素上拿掉） */
+  const ONE_SHOT_CLASSES = ['jump-flash', 'just', 'just-done'];
 
   /* ============================================================
    * 狀態保存
@@ -69,6 +78,8 @@
   const materialByName = {};
   /** 全部任務 */
   const allTasks = [];
+  /** 概念動畫 id → 設定（course-data.js 的 demos） */
+  const demoById = {};
 
   /** 建立各種查詢索引 */
   function buildIndexes() {
@@ -78,6 +89,12 @@
     });
     (C.quiz || []).forEach(q => { quizById[q.id] = q; });
     (C.materials || []).forEach(m => { materialByName[m.name] = m; });
+    (C.demos || []).forEach(d => { demoById[d.id] = d; });
+  }
+
+  /** 使用者是否開了「減少動態」；開了就不加任何動效 class，也不提供自動播放 */
+  function prefersReducedMotion() {
+    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; }
   }
 
   /* ============================================================
@@ -502,8 +519,19 @@
       case 'quiz': return renderQuizItem(quizById[b.id]);
       case 'materials': return renderMaterialRows(b.names.map(n => materialByName[n]).filter(Boolean));
       case 'image': return renderFigure(b, 'diagram');
+      case 'demo': return renderDemo(b);
       default: return el('p', { class: 'muted' }, '（不支援的區塊：' + b.type + '）');
     }
+  }
+
+  /**
+   * 概念動畫：交給 demos.js 依 kind 建立；demos.js 沒載入或設定遺失時只顯示一行提示，
+   * 不讓整個時段消失或整頁崩潰
+   */
+  function renderDemo(b) {
+    const cfg = demoById[b.id];
+    const built = cfg && window.DEMOS ? window.DEMOS.build(cfg, { el, inlineMarkdown, reducedMotion: prefersReducedMotion }) : null;
+    return built || el('p', { class: 'muted demo-missing' }, '（動畫示範載入失敗，可以略過這一段）');
   }
 
   /** 提示詞卡片：標題、說明、內容與複製按鈕 */
@@ -589,8 +617,13 @@
     return box;
   }
 
-  /** 依作答狀態更新互動題外觀 */
-  function paintQuiz(box, q) {
+  /**
+   * 依作答狀態更新互動題外觀
+   * @param {HTMLElement} box 題目卡片
+   * @param {object} q 題目
+   * @param {boolean} [animate] 使用者剛作答時才傳 true：被選的選項與回饋區加 just，播放彈出／輕搖／滑入
+   */
+  function paintQuiz(box, q, animate) {
     const chosen = state.quiz[q.id];
     const answered = chosen !== undefined && chosen !== null;
     box.classList.toggle('answered', answered);
@@ -612,6 +645,11 @@
     retry.addEventListener('click', () => answerQuiz(q.id, null));
     fb.className = 'quiz-feedback ' + cls;
     fb.append(el('div', { class: 'fb-verdict' }, verdict), el('div', { class: 'fb-explain' }, inlineMarkdown(q.explain)), retry);
+    if (animate && !prefersReducedMotion()) {
+      const picked = box.querySelector('.quiz-opt.chosen');
+      if (picked) picked.classList.add('just');
+      fb.classList.add('just');
+    }
   }
 
   /** 課堂素材總覽 */
@@ -697,6 +735,10 @@
     const quizCount = C.quiz.filter(q => state.quiz[q.id] !== undefined && state.quiz[q.id] !== null).length;
     const pct = allTasks.length ? Math.round(doneCount / allTasks.length * 100) : 0;
     const wrap = document.getElementById('navProgress');
+    // 進度條保留舊寬度再補間到新寬度：整塊重建會讓 transition 失效，所以先記下舊寬度
+    const prevFill = wrap.querySelector('.np-fill');
+    const prevWidth = prevFill ? prevFill.style.width : '';
+    const newWidth = pct + '%';
     const reset = el('button', { class: 'link-btn', type: 'button' }, '清除我的進度');
     reset.addEventListener('click', () => {
       if (!window.confirm('要清除所有任務勾選與互動題作答嗎？')) return;
@@ -711,9 +753,14 @@
     wrap.replaceChildren(
       el('div', { class: 'np-row' }, el('span', {}, '任務'), el('span', { class: 'np-num' }, `${doneCount} / ${allTasks.length}`)),
       el('div', { class: 'np-bar', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': String(pct), 'aria-label': '任務完成度' },
-        el('div', { class: 'np-fill', style: 'width:' + pct + '%' })),
+        el('div', { class: 'np-fill', style: 'width:' + (prevWidth || newWidth) })),
       el('div', { class: 'np-row' }, el('span', {}, '互動題'), el('span', { class: 'np-num' }, `${quizCount} / ${C.quiz.length}`)),
       reset);
+    if (prevWidth && prevWidth !== newWidth) {
+      const fill = wrap.querySelector('.np-fill');
+      void fill.offsetWidth; // 先讓瀏覽器排版一次舊寬度，下一行改寬度才會有過渡
+      fill.style.width = newWidth;
+    }
     C.units.forEach(u => {
       const ts = u.tasks || [];
       const d = ts.filter(t => state.tasks[t.id]).length;
@@ -728,16 +775,54 @@
    * 互動行為
    * ============================================================ */
 
-  /** 切換任務完成狀態 */
+  /** 單元的任務是否全部完成（沒有任務的單元視為未完成） */
+  function unitComplete(u) {
+    const ts = u.tasks || [];
+    return ts.length > 0 && ts.every(t => state.tasks[t.id]);
+  }
+
+  /** 切換任務完成狀態；新勾選時勾勾彈跳，某單元因此全部完成時慶祝一次 */
   function toggleTask(id) {
+    const unit = C.units.find(u => (u.tasks || []).some(t => t.id === id));
+    const wasComplete = unit ? unitComplete(unit) : false;
     if (state.tasks[id]) delete state.tasks[id];
     else state.tasks[id] = true;
     store.save(state);
+    const nowDone = !!state.tasks[id];
     document.querySelectorAll(`[data-task-id="${id}"]`).forEach(li => {
-      li.classList.toggle('done', !!state.tasks[id]);
-      li.setAttribute('aria-checked', state.tasks[id] ? 'true' : 'false');
+      li.classList.toggle('done', nowDone);
+      li.setAttribute('aria-checked', nowDone ? 'true' : 'false');
+      li.classList.remove('just-done');
+      if (nowDone && !prefersReducedMotion()) {
+        void li.offsetWidth; // 連點兩次也能重播
+        li.classList.add('just-done');
+      }
     });
     updateProgress();
+    if (unit && nowDone && !wasComplete && unitComplete(unit)) celebrate(unit);
+  }
+
+  /**
+   * 單元任務全部完成的慶祝：跳提示、進度膠囊彈跳、噴一次小彩紙（只在使用者剛勾完時；重新載入不重播）
+   * @param {object} u 剛完成的單元
+   */
+  function celebrate(u) {
+    showToast(`${u.short} 的任務全部完成 🎉`);
+    if (prefersReducedMotion()) return;
+    document.querySelectorAll(`[data-unit-pill="${u.id}"], [data-nav-pill="${u.id}"]`).forEach(p => {
+      p.classList.remove('celebrate');
+      void p.offsetWidth;
+      p.classList.add('celebrate');
+    });
+    const host = document.querySelector(`#${u.id} .unit-hero-meta`);
+    if (!host) return;
+    host.querySelectorAll('.confetti').forEach(c => c.remove());
+    // 14 片彩紙的方向與旋轉用固定公式算，畫面每次都一樣，不依賴亂數
+    const pieces = Array.from({ length: 14 }, (_, i) =>
+      el('i', { style: `--dx:${((i * 37) % 130) - 65}px;--dy:${-(28 + (i * 53) % 70)}px;--r:${(i * 47) % 360}deg;--c:${i % 4}` }));
+    const box = el('span', { class: 'confetti', 'aria-hidden': 'true' }, pieces);
+    host.append(box);
+    setTimeout(() => box.remove(), 700);
   }
 
   /** 作答互動題；index 為 null 表示清除重答 */
@@ -746,8 +831,66 @@
     else state.quiz[id] = index;
     store.save(state);
     const q = quizById[id];
-    document.querySelectorAll(`.quiz-card[data-quiz-id="${id}"]`).forEach(box => paintQuiz(box, q));
+    document.querySelectorAll(`.quiz-card[data-quiz-id="${id}"]`).forEach(box => paintQuiz(box, q, index !== null));
     updateProgress();
+  }
+
+  /* ============================================================
+   * 全站功能性動效：捲動進場、跳轉高亮
+   * 原則：只在使用者動作或進入畫面時播一次；預設狀態可見；減少動態時完全不加 class
+   * ============================================================ */
+
+  /**
+   * 捲動進場：卡片與標題第一次接近畫面時加 reveal-in（style.css 用 @keyframes 播放）
+   * 同一批一起進入的元素依序錯開 60ms，最多 4 格，避免最後一個等太久
+   */
+  function setupReveal() {
+    if (!('IntersectionObserver' in window) || prefersReducedMotion()) return;
+    const observer = new IntersectionObserver(entries => {
+      let i = 0;
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.style.setProperty('--reveal-delay', Math.min(i, 4) * 60 + 'ms');
+        entry.target.classList.add('reveal-in');
+        observer.unobserve(entry.target);
+        i++;
+      });
+    }, { rootMargin: '0px 0px 80px 0px', threshold: 0 });
+    document.querySelectorAll(REVEAL_SELECTOR).forEach(t => observer.observe(t));
+  }
+
+  /** 跳轉高亮實際亮框的元素：單元亮標題區、章節亮章節標題，其餘（時段、互動題）亮自己 */
+  function flashNodeOf(target) {
+    if (target.classList.contains('unit-chapter')) return target.querySelector('.unit-hero') || target;
+    if (target.matches('section.chapter')) return target.querySelector('.chapter-title, h1') || target;
+    return target;
+  }
+
+  /** 等捲動停穩（連續 8 個影格 scrollY 不變，最多 90 個影格）再呼叫 done */
+  function afterScrollSettles(done) {
+    let last = window.scrollY, still = 0, frames = 0;
+    const tick = () => {
+      frames++;
+      if (window.scrollY === last) still++;
+      else { still = 0; last = window.scrollY; }
+      if (still >= 8 || frames > 90) done();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  /**
+   * 跳轉高亮：捲動停穩後讓目標亮框約 0.6 秒，一次只亮一個
+   * @param {HTMLElement} target 錨點指到的元素
+   */
+  function flashTarget(target) {
+    if (!target || prefersReducedMotion()) return;
+    const node = flashNodeOf(target);
+    afterScrollSettles(() => {
+      document.querySelectorAll('.jump-flash').forEach(n => n.classList.remove('jump-flash'));
+      void node.offsetWidth; // 同一個目標連按兩次也能重播
+      node.classList.add('jump-flash');
+    });
   }
 
   /** 目前彈窗素材的原始文字（「複製全文」用） */
@@ -927,6 +1070,26 @@
       openTool(link.getAttribute('href').split('?')[1] || '');
       if (mql.matches) closeSidebar();
     });
+    // 站內錨點連結（側欄、時程表、互動題回顧…）：捲動停穩後讓目標亮框
+    document.addEventListener('click', e => {
+      const link = e.target.closest && e.target.closest('a[href^="#"]');
+      if (!link || e.defaultPrevented || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+      const id = link.getAttribute('href').slice(1);
+      if (!id) return;
+      let target = null;
+      try { target = document.getElementById(decodeURIComponent(id)); } catch (err) { /* 網址編碼不合法就略過 */ }
+      if (target) flashTarget(target);
+    });
+    // 一次性動效播完就把 class 拿掉（只處理觸發事件的那個元素，不看子孫的動畫）
+    document.addEventListener('animationend', e => {
+      const node = e.target;
+      if (!node || !node.classList) return;
+      ONE_SHOT_CLASSES.forEach(c => {
+        if (!node.classList.contains(c)) return;
+        if (c === 'jump-flash' && e.animationName && e.animationName !== 'jump-flash') return;
+        node.classList.remove(c);
+      });
+    });
     document.getElementById('toolClose').addEventListener('click', closeTool);
     document.getElementById('toolBackdrop').addEventListener('click', e => { if (e.target.id === 'toolBackdrop') closeTool(); });
     // 工具頁（iframe）裡按 ESC 會送訊息過來；只接受同一個網站的訊息
@@ -968,10 +1131,14 @@
     applyZoom(state.zoom || 1);
     updateProgress();
     setupScrollSpy();
-    // 網址帶錨點時，渲染完成後再捲過去
+    setupReveal();
+    // 網址帶錨點時，渲染完成後再捲過去，並讓目標亮框
     if (location.hash) {
       const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-      if (target) target.scrollIntoView();
+      if (target) {
+        target.scrollIntoView();
+        flashTarget(target);
+      }
     }
   }
 

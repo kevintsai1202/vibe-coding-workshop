@@ -7,7 +7,8 @@
  *   - 素材新增要三處同步：course-package/materials/ 放檔、本檔 materials[]、時段內的 materials 區塊
  *   - 提示詞改了要跑 npm run build:prompts 重產 materials/提示詞卡.md
  *   - 行內文字支援 **粗體**、`程式碼`、[連結](網址)、<網址>
- * 區塊（blocks）型別：text、heading、list、table、code、prompt、note、quiz、materials、image
+ * 區塊（blocks）型別：text、heading、list、table、code、prompt、note、quiz、materials、image、demo
+ * demo 區塊：{ type: 'demo', id: 'demo-…' }，內容在本檔 demos[]；畫面與播放邏輯在 demos.js（改台詞不必動程式）
  * 素材 type：MD、CSV、HTML（HTML 範本要有 saveAs，貼上工具的範本選單與功能插槽會用到）
  * 插圖：assets/illustrations/*.webp（muse-image 生成，提示詞見同名 .prompt.md）
  */
@@ -258,6 +259,7 @@ window.COURSE = {
               '**把關**：資料安全、個資、能不能交給別人用。'
             ] },
             { type: 'image', name: 'u1-roles.webp', alt: '說清楚、AI 做出來、你來驗收、不對再說四步循環', caption: '今天的工作方式：你說、AI 做、你驗收' },
+            { type: 'demo', id: 'demo-cycle' },
             { type: 'quiz', id: 'q2' },
             { type: 'heading', text: 'AI 可以在開發的哪些階段幫上忙' },
             { type: 'table', head: ['開發階段', 'AI 幫你做', '你要做'], rows: [
@@ -381,6 +383,7 @@ window.COURSE = {
             { type: 'text', body: '小芸說：「我想要一個報名系統，可以報名、可以簽到，最好能看出席率。」這句話 AI 會做，但它會自己猜很多事：名額滿了怎麼辦？同一人報兩次怎麼辦？單位要自己打字還是用選的？猜錯了，就要來回改很多次，也更耗額度。' },
             { type: 'heading', text: '讓 AI 反問你：先討論，再寫文件' },
             { type: 'text', body: '最省力的做法是：把訪談紀錄交給 AI，**請它先說它理解了什麼、再列出不清楚的問題問你**，你回答完才開始寫規格書。這一步通常能找出 3～5 個自己沒想到的規則。' },
+            { type: 'demo', id: 'demo-interview' },
             { type: 'heading', text: '規格書要寫什麼' },
             { type: 'text', body: '規格書不是給主管看的報告，是給「AI 和資訊室」照著做的依據。今天的範本有八節：' },
             { type: 'table', head: ['節', '內容', '一句話'], rows: [
@@ -440,6 +443,7 @@ window.COURSE = {
               ['關聯（course_id）', '報名資料裡寫「我報的是第幾號課程」'],
               ['SQL', '對資料庫下命令的語言，例如「查出消防講習的所有報名」']
             ] },
+            { type: 'demo', id: 'demo-enroll' },
             { type: 'quiz', id: 'q6' },
             { type: 'heading', text: '什麼是輕量級資料庫' },
             { type: 'table', head: ['', '輕量級：SQLite', '一般伺服器型：PostgreSQL、MySQL'], rows: [
@@ -471,6 +475,7 @@ window.COURSE = {
             { type: 'quiz', id: 'q7' },
             { type: 'heading', text: '今天的成品長這樣' },
             { type: 'text', body: '為了不用安裝伺服器，今天把「櫃檯」和「廚房」放在同一個網頁檔裡，倉庫是瀏覽器裡的 SQLite。畫面與規則都在 `signin.html`，資料存在你的瀏覽器。' },
+            { type: 'demo', id: 'demo-dataflow' },
             { type: 'heading', text: '那為什麼還要寫 API 文件？' },
             { type: 'text', body: '課堂版只有你一個人在一台電腦用。如果之後要讓各單位窗口都能自己報名，就得做成有伺服器的正式系統，這時前端和後端要分開。規格書第 7 節的 API 文件，就是先把「點餐單長什麼樣」寫好，資訊室接手時照著做。API 文件長這樣（節錄自參考答案）：' },
             { type: 'table', head: ['方法', '網址', '做什麼', '可能的結果'], rows: [
@@ -644,6 +649,7 @@ function attendanceText(courseId) {
               ['幫我做一個報名系統', '請依 docs/plan.md 做第一步：新增課程與報名，含額滿與重複報名檢查。只建立 signin.html，第二步先不要做。做完告訴我怎麼驗收。']
             ] },
             { type: 'image', name: 'u3-prompt.webp', alt: '四段式指令：目標、範圍、限制、驗收，對照一句太模糊的指令', caption: '目標、範圍、限制、驗收四段都有，AI 就不用猜' },
+            { type: 'demo', id: 'demo-prompt' },
             { type: 'quiz', id: 'q9' },
             { type: 'heading', text: 'AI 為什麼會亂編' },
             { type: 'text', body: 'AI 的工作方式是「接出最像的答案」，資訊不夠時，它會用最常見的做法自己補上，而且講得很有把握。這不是故意騙人，是它不知道你們的規則。' },
@@ -668,6 +674,7 @@ function attendanceText(courseId) {
               ['重要決定寫進檔案', '寫在 spec.md、plan.md，比留在對話裡可靠'],
               ['請 AI 寫交接摘要', '對話太長時，請它把目前進度寫成摘要，貼到新對話']
             ] },
+            { type: 'demo', id: 'demo-context' },
             { type: 'heading', text: '使用成本怎麼省' },
             { type: 'list', items: [
               '一般聊天不限次數，**主要工作放在聊天**；Codex 有額度，留給「需要讀整個檔案」的工作。',
@@ -709,6 +716,7 @@ function attendanceText(courseId) {
               ['2', '`attendanceText(courseId)`', '出席率文字'],
               ['3', '`exportCsv(courseId)`', '匯出簽到名單 CSV']
             ] },
+            { type: 'demo', id: 'demo-slots' },
             { type: 'note', body: '**做法（每張功能卡都一樣）**：在貼上工具按該插槽的「複製功能卡提示詞」→ 貼到 ChatGPT 一般聊天 → 把 AI 回的函式貼回同一個插槽 → 組合並預覽 → 測試。三張卡可以在同一個聊天接著做。' },
             { type: 'heading', text: '功能卡 1：簽到（15 分）' },
             { type: 'prompt', id: 'p-slot-1', title: '功能卡 1：簽到', note: '一般聊天：AI 回的函式貼到功能插槽 1', text:
@@ -767,6 +775,7 @@ function attendanceText(courseId) {
               ['資料外洩', '存了或匯出了不該給的資料', '只存規格書列的欄位；不存身分證字號、病歷號']
             ] },
             { type: 'text', body: '測試方法很簡單：在姓名欄輸入 `O\'Brien`（含單引號）看能不能正常報名；輸入 `<b>測試</b>`，名單上應該顯示原本的文字，而不是變成粗體。' },
+            { type: 'demo', id: 'demo-test' },
             { type: 'quiz', id: 'q11' }
           ]
         },
@@ -852,6 +861,220 @@ F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息�
     { id: 'm-accept', file: '成品驗收清單.md', name: '成品驗收清單.md', type: 'MD', section: 'u3-s5', desc: '12 項功能測試＋2 項安全測試' },
     { id: 'm-review', file: 'CodeReview提示詞.md', name: 'CodeReview提示詞.md', type: 'MD', section: 'u3-s5', desc: 'Codex 審查提示詞（只讀不改）、聊天修正提示詞與五項白話說明' },
     { id: 'm-prompts', file: '提示詞卡.md', name: '提示詞卡.md', type: 'MD', section: null, desc: '全天所有提示詞彙整，可離線複製' }
+  ],
+
+  /* ============================================================
+   * demos：概念動畫示範（畫面與播放邏輯在 demos.js）
+   * 數字與訊息與共用案例、訪談紀錄、成品驗收清單、signin_完成版.html 一致；
+   * hint 是顯示在示範下方的一句操作提示（純文字，講師帶著講、學員自己玩都適用）；autoMs 是自動播放每一步的間隔（毫秒）
+   * ============================================================ */
+  demos: [
+    {
+      id: 'demo-cycle', kind: 'cycle', title: 'Vibe Coding 迴圈：用計時器走兩圈', autoMs: 2800,
+      hint: '按「下一步」走完兩圈。注意第 3 步：驗收發現少了東西，不是 AI 壞掉，是你還沒說。',
+      doneLabel: '驗收通過，這一版可以用了',
+      nodes: [
+        { key: 'say', icon: '💬', label: '說清楚', sub: '你' },
+        { key: 'make', icon: '🤖', label: 'AI 做', sub: 'AI' },
+        { key: 'check', icon: '👀', label: '你驗收', sub: '你' },
+        { key: 'again', icon: '🔁', label: '不對再說', sub: '你' }
+      ],
+      steps: [
+        { node: 0, lap: 1, who: '你', text: '幫我的休息計時器加一顆「5 分鐘」按鈕，按了就改成倒數 5 分鐘。',
+          caption: '**第 1 步・說清楚**：你只要用中文講「要什麼」，不用寫程式。' },
+        { node: 1, lap: 1, who: 'AI', text: '已經加上「5 分鐘」按鈕，按下去畫面會變成 05:00。',
+          caption: '**第 2 步・AI 做**：AI 照你說的寫出第一版，幾十秒就好。' },
+        { node: 2, lap: 1, who: '你', text: '按「5 分鐘」有變成 05:00，也會倒數；但倒到 00:00 什麼事都沒發生，下課了我沒發現。',
+          caption: '**第 3 步・你驗收**：親手點一遍。哪裡不夠，AI 不會知道，只有你看得出來。', verdict: 'fail' },
+        { node: 3, lap: 1, who: '你', text: '時間到的時候，整個畫面變成綠色，顯示「休息結束，回座囉！」。其他功能不要動。',
+          caption: '**第 4 步・不對再說**：把不對的地方說出來，還要補一句「其他不要動」。' },
+        { node: 1, lap: 2, who: 'AI', text: '只加了「時間到」的處理；「5 分鐘」、開始、暫停、重設都沒有動。',
+          caption: '**第 5 步・AI 再做**：這一圈只改一個地方，比整份重來快，也不容易改壞。' },
+        { node: 2, lap: 2, who: '你', text: '倒數到 00:00 畫面變綠色，出現「休息結束，回座囉！」；其他按鈕也都正常。',
+          caption: '**第 6 步・再驗收**：通過。今天的三個成品，都是這樣一圈一圈做出來的。', verdict: 'pass', done: true }
+      ]
+    },
+    {
+      id: 'demo-interview', kind: 'interview', title: '讓 AI 先發問，再寫規格書', autoMs: 3200,
+      hint: '注意第 3 步：AI 提出的問題，就是你原本沒想到的規則。先問再寫，八節才有依據。',
+      sections: ['專案目標', '使用者與使用情境', '功能清單與驗收條件', '業務規則', '畫面草圖', '資料表設計', 'API 文件', '技術架構與這次不做的事'],
+      messages: [
+        { who: 'you', lines: ['（貼上《需求訪談紀錄》全文）', '請先用三句話說你理解了什麼，再列出你不清楚的問題問我。先不要寫規格書。'],
+          caption: '**第 1 步**：整份訪談紀錄貼給 AI，並且明說「先說理解、先發問，先不要寫」。' },
+        { who: 'ai', lines: ['我的理解：', '1. 教學研究部每月辦 5 場院內訓練，現在靠 LINE、紙本與 Excel。', '2. 要做的是報名（額滿、重複要擋）、當天簽到、看出席率、匯出給主任。', '3. 資料先只放在小芸的電腦，不放上網路。'],
+          sets: { 0: 'done', 1: 'done' },
+          caption: '**第 2 步**：AI 先說它的理解，對不對由你判斷。第 1、2 節（目標、使用者）已經有內容。' },
+        { who: 'ai', lines: ['我有幾個地方不清楚：', '① 每堂課、每筆報名要記哪些資料？', '② 單位是自己打字，還是用選的？', '③ 名額滿了怎麼辦？', '④ 什麼情況算「重複報名」？', '⑤ 資料存在哪裡？要登入嗎？'],
+          sets: { 3: 'ask', 4: 'ask', 5: 'ask', 7: 'ask' },
+          caption: '**第 3 步**：AI 列出 5 個問題。黃色的節是「還不能寫」的地方——沒問到，AI 就會自己猜。' },
+        { who: 'you', lines: ['（從《訪談補充回答》複製對應的答案貼給 AI）', '課程記名稱、日期、時間、地點、名額、時數；報名記員編、姓名、單位（下拉選）。名額滿了顯示「名額已滿」；同員編同課不能重複；不用登入，資料存在瀏覽器。'],
+          caption: '**第 4 步**：你只回答 AI 問的問題，答案從訪談補充回答裡找。' },
+        { who: 'ai', lines: ['了解，我照這些回答寫好 spec.md 八節：', '目標、使用者、功能與驗收條件、業務規則（額滿、重複）、畫面草圖、資料表、API、技術架構與「這次不做」。', '請你檢查規則有沒有寫錯。'],
+          sets: { 2: 'done', 3: 'done', 4: 'done', 5: 'done', 6: 'done', 7: 'done' },
+          caption: '**第 5 步**：八節全部填好。最後仍然由你檢查——尤其是業務規則。' }
+      ]
+    },
+    {
+      id: 'demo-enroll', kind: 'enroll-sim', title: '報名一筆資料，看兩張資料表怎麼動',
+      hint: '先按「陳美玲 再報名消防安全」看 R2 擋重複，再按蔡佳蓉、鄭宇翔看 R1 額滿；按重設後換個順序再試，規則是即時判斷的。',
+      rules: ['R1 名額滿了就不能再報名', 'R2 同一位員工同一堂課不能重複報名'],
+      courses: [
+        { id: 1, title: '消防安全講習', capacity: 40 },
+        { id: 2, title: '個資保護與資安宣導', capacity: 3 }
+      ],
+      seed: [
+        { course_id: 1, emp_no: 'E1001', name: '陳美玲', dept: '護理部' },
+        { course_id: 1, emp_no: 'E1002', name: '林志明', dept: '總務室' },
+        { course_id: 1, emp_no: 'E1003', name: '黃淑芬', dept: '藥劑部' },
+        { course_id: 1, emp_no: 'E1004', name: '吳家豪', dept: '資訊室' },
+        { course_id: 2, emp_no: 'E1001', name: '陳美玲', dept: '護理部' },
+        { course_id: 2, emp_no: 'E1005', name: '許雅雯', dept: '人資室' }
+      ],
+      actions: [
+        { label: '蔡佳蓉 E1006 報名「個資保護」', course_id: 2, emp_no: 'E1006', name: '蔡佳蓉', dept: '檢驗科' },
+        { label: '鄭宇翔 E1007 報名「個資保護」', course_id: 2, emp_no: 'E1007', name: '鄭宇翔', dept: '放射科' },
+        { label: '陳美玲 E1001 再報名「消防安全」', course_id: 1, emp_no: 'E1001', name: '陳美玲', dept: '護理部' },
+        { label: '李國棟 E1010 報名「消防安全」', course_id: 1, emp_no: 'E1010', name: '李國棟', dept: '醫務部' }
+      ],
+      captions: {
+        idle: '按下面的情境。規則是即時判斷的：先查人數（R1），再查有沒有重複（R2），兩關都過才 INSERT 一列。',
+        ok: '**通過**：人數還沒滿、也沒報過，所以 INSERT 一列。注意 `course_id` 只記「報哪一堂」，課程名稱和名額沒有重複存。',
+        full: '**R1 擋下來**：查到人數已經等於名額，後面的重複檢查和 INSERT 都不會執行，資料一列都沒多。',
+        dup: '**R2 擋下來**：同一個員編在這堂課已經有一列，所以不再新增。同一個人報別堂課（例如個資課）是可以的。'
+      }
+    },
+    {
+      id: 'demo-dataflow', kind: 'dataflow', title: '按下「報名」之後，資料怎麼跑', autoMs: 2600, packet: '🧾',
+      hint: '先跑「報名成功」，再切到「名額已滿」。注意第 4 步：是廚房（函式）在判斷規則，不是畫面。',
+      nodes: [
+        { icon: '🧑‍💼', label: '櫃檯', sub: '畫面上的按鈕與表格' },
+        { icon: '👩‍🍳', label: '廚房', sub: 'enroll() 函式，照規則處理' },
+        { icon: '📦', label: '倉庫', sub: 'SQLite 資料表' }
+      ],
+      scenarios: [
+        {
+          key: 'ok', label: '報名成功', outcome: 'ok',
+          result: '蔡佳蓉 已報名「個資保護與資安宣導」，名單多一列，人數變 3 / 3',
+          formal: '做成正式系統時，這一趟會變成：POST /api/courses/2/enrollments → 201 Created',
+          steps: [
+            { at: 0, title: '① 櫃檯收到點餐單', text: '使用者填好員編、姓名、單位，按下「報名」。畫面把這些資料交給 enroll()。', code: '按鈕 [報名]  →  enroll()' },
+            { at: 1, title: '② 廚房先照規則檢查', text: 'enroll() 先檢查必填與員編格式，再問倉庫：這堂課現在幾個人？', code: "const count = query('SELECT COUNT(*) AS n FROM enrollments WHERE course_id = ?', [courseId])[0].n;" },
+            { at: 2, title: '③ 倉庫回答並存入', text: '倉庫回報目前 2 人（名額 3），也沒有重複，於是把這一筆寫進 enrollments。', code: "run('INSERT INTO enrollments (course_id, emp_no, name, dept, enrolled_at) VALUES (?, ?, ?, ?, ?)', [...]);", tone: 'ok' },
+            { at: 1, title: '④ 廚房回報結果', text: '寫入成功，廚房存檔，並告訴櫃檯：可以更新畫面了。', code: 'save();  render();  showMsg(...);', tone: 'ok' },
+            { at: 0, title: '⑤ 櫃檯更新畫面', text: '名單多一列，人數變成 3 / 3，並顯示「蔡佳蓉 已報名」。', tone: 'ok' }
+          ]
+        },
+        {
+          key: 'full', label: '名額已滿', outcome: 'error',
+          result: '名額已滿，無法報名，名單和人數都沒有變',
+          formal: '做成正式系統時，這一趟會變成：POST /api/courses/2/enrollments → 409 Conflict',
+          steps: [
+            { at: 0, title: '① 櫃檯收到點餐單', text: '使用者填好員編、姓名、單位，按下「報名」。畫面把這些資料交給 enroll()。', code: '按鈕 [報名]  →  enroll()' },
+            { at: 1, title: '② 廚房先照規則檢查', text: 'enroll() 先檢查必填與員編格式，再問倉庫：這堂課現在幾個人？', code: "const count = query('SELECT COUNT(*) AS n FROM enrollments WHERE course_id = ?', [courseId])[0].n;" },
+            { at: 2, title: '③ 倉庫回答人數', text: '倉庫回報：目前 3 人，而這堂課的名額也是 3 人。倉庫只負責回答，不會自己拒絕。', code: 'n = 3    capacity = 3' },
+            { at: 1, title: '④ 廚房判斷：滿了，退單', text: '規則是廚房（函式）在判斷的，不是畫面。人數已經達到名額，所以不寫入任何資料，直接回報失敗。', code: "if (count >= course.capacity) { showMsg('名額已滿，無法報名', 'error'); return; }", tone: 'error' },
+            { at: 0, title: '⑤ 櫃檯顯示訊息', text: '畫面顯示「名額已滿，無法報名」，名單和人數維持原樣。', tone: 'error' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'demo-prompt', kind: 'prompt-compare', title: '同一個需求：模糊 vs 精準指令', autoMs: 2800,
+      hint: '左邊的猜測項目一直都在；右邊每加一段就劃掉幾個，最後歸零。想想看：哪一段劃掉最多？',
+      vague: '幫我做一個報名系統',
+      emptyHint: '從這裡開始，一段一段加上去 →',
+      guesses: [
+        { id: 'g1', text: '一次把所有功能都做完' },
+        { id: 'g2', text: '改用 React 專案重寫' },
+        { id: 'g3', text: '資料庫換成 MySQL 伺服器' },
+        { id: 'g4', text: '自己加登入與帳號權限' },
+        { id: 'g5', text: '自己加 Email／LINE 通知' },
+        { id: 'g6', text: '順手做 QR Code 簽到' },
+        { id: 'g7', text: '做完只回一句「完成了」' }
+      ],
+      parts: [
+        { key: 'goal', label: '目標', text: '請依 docs/plan.md 做第一步：新增課程與報名，含額滿與重複報名檢查。', kills: ['g1'] },
+        { key: 'scope', label: '範圍', text: '只建立 signin.html。', kills: ['g2', 'g3'] },
+        { key: 'limit', label: '限制', text: '第二步先不要做；規格書沒寫的功能不要加。', kills: ['g4', 'g5', 'g6'] },
+        { key: 'accept', label: '驗收', text: '做完告訴我怎麼驗收，我會照著點。', kills: ['g7'] }
+      ],
+      captions: [
+        '**模糊指令**：AI 不知道範圍、規矩，也不知道怎樣算完成，只好用最常見的做法自己補，補出 7 個你沒要的東西。',
+        '**加上「目標」**：講清楚這次只做第一步，「一次全做完」不必再猜。',
+        '**加上「範圍」**：只動 signin.html，換框架、換資料庫都不必猜。',
+        '**加上「限制」**：明說不要的事，登入、通知、QR Code 自己加的機會就沒了。',
+        '**加上「驗收」**：要它交代怎麼驗收，就不會只回一句「完成了」。四段都有，AI 要猜的地方歸零。'
+      ]
+    },
+    {
+      id: 'demo-context', kind: 'context-meter', title: '對話越長，AI 越讀不完',
+      hint: '連按「聊一輪」讓水位爬到紅色，再多按幾次，看最前面的規矩怎麼被擠掉；最後按「交接摘要」開新對話。',
+      capacity: 100,
+      rules: { label: '最前面的規矩：用繁體中文、SQL 用參數', cost: 6 },
+      summary: { label: '上一個對話的交接摘要', cost: 4, button: '請 AI 寫交接摘要，開新對話' },
+      actions: [
+        { key: 'chat', label: '聊一輪', cost: 9 },
+        { key: 'doc', label: '貼一份長文件', cost: 22 }
+      ],
+      bands: [
+        { upTo: 60, tone: 'ok', label: '水位低：AI 讀得完，也記得住前面說好的事' },
+        { upTo: 85, tone: 'warn', label: '水位偏高：回答變慢，開始容易忘記前面的規則' },
+        { upTo: 100, tone: 'bad', label: '快滿了：該換新對話了' }
+      ],
+      overflowNote: '最前面的規矩已經被擠出去，AI 讀不到了，它會照自己的習慣做。'
+    },
+    {
+      id: 'demo-slots', kind: 'slot-puzzle', title: '三個插槽，一個一個補成完成版', autoMs: 2800,
+      hint: '基本版已經能開課、報名；每補一個插槽，右邊預覽就多一個功能可以用。三張功能卡各補一個。',
+      doneLabel: 'signin.html 完成版：開課、報名、簽到、出席率、匯出 CSV 全部可用',
+      base: ['新增課程', '報名（含額滿、重複報名檢查）'],
+      slots: [
+        { n: 1, label: '簽到', fn: 'checkIn(enrollmentId)', promptId: 'p-slot-1', lines: ['找出這筆報名', '已經簽到過就擋下來（R4）', '否則記下簽到時間並存檔'] },
+        { n: 2, label: '出席率', fn: 'attendanceText(courseId)', promptId: 'p-slot-2', lines: ['數出報名人數與已簽到人數', '出席率 = 已簽到 ÷ 報名（R5）', '沒人報名時回傳「—」'] },
+        { n: 3, label: '匯出 CSV', fn: 'exportCsv(courseId)', promptId: 'p-slot-3', lines: ['第一列是表頭，每位報名者一列', '開頭加 UTF-8 BOM（R6）', '欄位有逗號時用雙引號包起來'] }
+      ],
+      captions: [
+        '**基本版**：開課、報名已經完成，但簽到、出席率、匯出 CSV 三個位置是空的。',
+        '**功能卡 1**：AI 只寫 checkIn 這一個函式，貼進插槽 1，簽到就能用了。',
+        '**功能卡 2**：再補 attendanceText，課程清單開始顯示出席率。',
+        '**功能卡 3**：最後補 exportCsv。三個插槽都補齊，基本版就變成完成版。'
+      ]
+    },
+    {
+      id: 'demo-test', kind: 'test-review', title: '測試、Code Review、修正、再測', autoMs: 3000,
+      hint: '測試告訴你哪裡壞，Code Review 告訴你為什麼壞。範例是示意，你的檔案以 Review 實際回報為準。',
+      tests: [
+        { id: '#2', label: '新增課程「感染管制教育訓練」', expect: '課程清單多一堂，顯示 0 / 30 人' },
+        { id: '#4', label: '個資課報名蔡佳蓉', expect: '名單多一列，顯示 3 / 3 人' },
+        { id: '#5', label: '個資課再報名一人', expect: '顯示「名額已滿，無法報名」' },
+        { id: '#6', label: '消防課重複報名 E1001', expect: '顯示「E1001 已報名過這堂課」' },
+        { id: '#8', label: '林志明按「簽到」', expect: '顯示簽到時間，按鈕消失' },
+        { id: 'S1', label: "報名時姓名輸入 O'Brien（含單引號）", expect: '正常報名成功，沒有錯誤', fail: true }
+      ],
+      review: [
+        { level: '高', where: 'enroll()', issue: "姓名直接接進 SQL 字串。輸入 O'Brien 會語法錯誤，也可能被塞進惡意指令（SQL 注入）。", fix: '改用 ? 參數，SQL 和資料分開傳。' },
+        { level: '中', where: 'checkIn()', issue: '找不到這筆報名時沒有任何提示，按了像沒反應。', fix: '找不到就用 showMsg 顯示錯誤訊息並結束。' },
+        { level: '低', where: 'exportCsv()', issue: '課程名稱含斜線時，下載的檔名可能不合法。', fix: '檔名裡的特殊符號先換成底線。' }
+      ],
+      diff: {
+        fn: 'enroll()',
+        removed: [
+          `run("INSERT INTO enrollments (course_id, emp_no, name, dept, enrolled_at)`,
+          `    VALUES (" + courseId + ", '" + empNo + "', '" + name + "', '" + dept + "', '" + nowText() + "')");`
+        ],
+        added: [
+          `run('INSERT INTO enrollments (course_id, emp_no, name, dept, enrolled_at) VALUES (?, ?, ?, ?, ?)',`,
+          `    [courseId, empNo, name, dept, nowText()]);`
+        ]
+      },
+      captions: [
+        '**測試前**：驗收清單的每一項都還沒跑，燈號是灰的。',
+        '**跑驗收清單**：五項通過，S1（姓名含單引號）亮紅燈。測試只告訴你「哪裡壞了」。',
+        '**Code Review**：請 AI 當審查者，只讀不改。它指出高風險是 SQL 用字串接，這就是 S1 失敗的原因。',
+        '**修正高風險**：只改這一處，把字串接法換成 ? 參數，其他函式不動。',
+        '**再測同一項**：S1 轉綠，六項全部通過。修一項、重測一項，不要一次改一堆。'
+      ]
+    }
   ],
 
   /* ============================================================
