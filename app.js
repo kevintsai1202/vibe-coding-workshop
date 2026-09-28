@@ -13,7 +13,7 @@
 
   /** 課程資料（course-data.js 定義） */
   const C = window.COURSE;
-  /** localStorage key；結構改版時遞增尾碼，不要沿用舊 key */
+  /** localStorage key；結構改版時遞增尾碼，不要沿用舊 key。其中的 20261021 只是識別字，不是開課日，不隨開課日更名（更名會清掉學員已勾的進度） */
   const STORE_KEY = 'vibe-tn-20261021-v1';
   /** 素材檔案所在路徑（相對於 index.html） */
   const MATERIAL_BASE = 'course-package/materials/';
@@ -423,7 +423,7 @@
     const table = el('div', { class: 'table-wrap' }, el('table', { class: 't schedule-table' },
       el('thead', {}, el('tr', {}, el('th', {}, '時間'), el('th', {}, '時長'), el('th', {}, '內容'), el('th', {}, '類型'))),
       el('tbody', {}, rows)));
-    return chapter('schedule', '全天時程', '10/21（三）09:30～16:30',
+    return chapter('schedule', '全天時程', '10/19（一）09:30～16:30',
       el('p', { class: 'lead' }, `上課 ${teachMinutes} 分鐘（含休息），其中動手實作 ${labMinutes} 分鐘；12:00～13:00 午餐。`),
       bar, legend, table);
   }
@@ -706,7 +706,7 @@
 
   /** 側欄導覽：固定章節 + 三單元的各時段 */
   function renderSidebar() {
-    document.getElementById('brandMeta').textContent = '10/21（三）09:30～16:30';
+    document.getElementById('brandMeta').textContent = '10/19（一）09:30～16:30';
     const nav = document.getElementById('nav');
     const link = (target, label, cls, extra) => el('a', { class: 'nav-link ' + (cls || ''), href: '#' + target, 'data-target': target }, label, extra || null);
     const items = [

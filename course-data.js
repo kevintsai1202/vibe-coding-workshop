@@ -23,7 +23,7 @@ window.COURSE = {
     // 總覽封面圖（assets/illustrations/）
     cover: { name: 'cover.webp', alt: '醫院行政人員對著筆電描述需求，畫面長出報名表、勾選清單與出席率圖' },
     organizer: '財團法人工業技術研究院產業學院（台南學習中心）',
-    date: '2026 年 10 月 21 日（三）',
+    date: '2026 年 10 月 19 日（一）',
     time: '09:30～16:30，共 6 小時（12:00～13:00 午餐）',
     location: '資安暨智慧科技研發大樓 6 樓會議室（臺南市歸仁區歸仁13路一段6號6F）',
     mapUrl: 'https://www.google.com/maps/search/?api=1&query=%E8%87%BA%E5%8D%97%E5%B8%82%E6%AD%B8%E4%BB%81%E5%8D%80%E6%AD%B8%E4%BB%8113%E8%B7%AF%E4%B8%80%E6%AE%B56%E8%99%9F',
@@ -123,7 +123,7 @@ window.COURSE = {
           ['emp_no', '員工編號', 'E1001'],
           ['name', '姓名', '陳美玲'],
           ['dept', '單位', '護理部'],
-          ['enrolled_at', '報名時間', '2026-10-21 10:15'],
+          ['enrolled_at', '報名時間', '2026-10-19 10:15'],
           ['checked_in_at', '簽到時間（空白＝還沒簽到）', '2026-11-05 13:52']
         ]
       }
