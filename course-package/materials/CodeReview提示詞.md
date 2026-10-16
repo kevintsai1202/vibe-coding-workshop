@@ -6,7 +6,7 @@
 
 ## 提示詞 1A：審查（Codex 版，只讀不改）
 
-事前準備：`AI實作` 資料夾裡要有 `signin.html` 和 `AGENTS.md`；切到 Codex、加入 `AI實作` 資料夾、開新對話。
+事前準備：`AI實作` 資料夾裡要有 `signin.html` 和 `AGENTS.md`；左上角「ChatGPT ⌄」選單切到 Codex、「選擇專案」→「新專案」加入 `AI實作` 資料夾、開新對話。
 
 ```text
 請讀 AGENTS.md 和 signin.html，以資安審查者的角度做 Code Review。

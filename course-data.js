@@ -169,12 +169,12 @@ window.COURSE = {
   // 與 course-package/supporting-docs.md「3. 常見狀況」逐列一致（verify-data 會檢查）
   faq: [
     ['忘記 ChatGPT 帳號密碼', '在登入畫面用「忘記密碼」重設；來不及的先和隔壁同學一起看，休息時間再處理'],
-    ['畫面上有 Chat、Work、Codex，不知道開哪個', '今天的「一般聊天」是 Chat；Work 今天用不到；Codex 只在下午用。按鈕名稱與位置以講師現場畫面為準'],
-    ['找不到 Codex', '看側邊欄或選單，Codex 和一般聊天是不同畫面；上午用不到 Codex，下午 Codex 路線與 Code Review 時講師會帶'],
+    ['畫面上有「對話」「工作」和 Codex，不知道開哪個', '今天的「一般聊天」是上方切換鈕的「對話」；「工作」今天用不到；Codex 在左上角「ChatGPT ⌄」選單裡，只在下午用。按鈕名稱與位置以講師現場畫面為準'],
+    ['找不到 Codex', '按左上角的「ChatGPT ⌄」，選單裡選 Codex；上午用不到，下午 Codex 路線與 Code Review 時講師會帶'],
     ['下載的檔案在哪裡', '瀏覽器預設存在「下載」資料夾，請移到桌面的 `AI實作` 資料夾'],
     ['貼上工具出現「可能不完整」的警告', 'AI 省略了部分程式，回聊天請它「回傳完整的程式，不要省略任何部分」'],
     ['貼上工具讀不到範本', '貼上工具要從教學網站的網址打開，不能直接雙擊 `tool.html`'],
-    ['Codex 說無法存取資料夾', '確認工作資料夾選的是 `AI實作`；跳出的確認視窗要允許'],
+    ['Codex 說無法存取資料夾', '按「選擇專案」確認選的是 `AI實作`；跳出的確認視窗要允許'],
     ['找不到 Codex 改好的檔案', 'Codex 直接改 `AI實作` 資料夾裡的 `signin.html`；檔案已經開著的話按 F5 重新整理，或直接問 Codex「改了哪個檔案？」'],
     ['雙擊 HTML 用了奇怪的程式打開', '在檔案上按右鍵 → 開啟檔案 → 選 Chrome 或 Edge'],
     ['改了程式，畫面沒變', '瀏覽器按 F5 重新整理'],
@@ -211,10 +211,16 @@ window.COURSE = {
       illustrations: [
         { name: 'u1-hero.webp', kind: 'hero', status: 'ready', alt: '行政人員對 AI 說話，螢幕長出報名表', spec: '醫院行政人員坐在筆電前，對著 AI 說話，螢幕上長出一張報名表（AI 生圖，溫暖、不科幻）' },
         { name: 'u1-roles.webp', kind: 'diagram', status: 'ready', alt: '你說清楚、AI 做出來、你驗收的循環', spec: '「你說清楚 → AI 做出來 → 你驗收 → 不對就再說」四格循環（手繪 SVG）' },
-        { name: 'u1-tools.webp', kind: 'diagram', status: 'ready', alt: '三類 AI 開發工具比較', spec: '編輯器／命令列／桌面應用並排比較，各配一個操作畫面示意（手繪 SVG）' }
+        { name: 'u1-tools.webp', kind: 'diagram', status: 'ready', alt: '三類 AI 開發工具比較', spec: '編輯器／命令列／桌面應用並排比較，各配一個操作畫面示意（手繪 SVG）' },
+        // App 介面截圖（scripts/drive-app.ps1 擷取、mosaic-shots.py 打馬賽克並標紅框；不計入插圖 1～3 張的上限）
+        { name: 'app-chat.png', kind: 'screenshot', status: 'ready', alt: 'ChatGPT 桌面版一般聊天畫面', spec: '一般聊天畫面：標出上方「對話／工作」切換鈕與左上角 ChatGPT 選單' },
+        { name: 'app-codeblock.png', kind: 'screenshot', status: 'ready', alt: '聊天回覆裡的程式碼框與複製按鈕', spec: '有程式碼框的回覆：標出框右上角的複製鈕與整段回覆下方的複製圖示' },
+        { name: 'app-switch.png', kind: 'screenshot', status: 'ready', alt: '左上角選單切換 ChatGPT 與 Codex', spec: '左上角「ChatGPT ⌄」下拉選單：ChatGPT 與 Codex 兩個選項' },
+        { name: 'app-codex.png', kind: 'screenshot', status: 'ready', alt: 'Codex 畫面', spec: 'Codex 畫面：標出「選擇專案」與輸入框旁的存取權限' },
+        { name: 'app-codex-folder.png', kind: 'screenshot', status: 'ready', alt: 'Codex 選擇專案的清單', spec: '「選擇專案」彈出清單：標出「新專案」' }
       ],
       tasks: [
-        { id: 'd1-u1-t1', section: 'u1-s4', label: '登入 ChatGPT 桌面版，開一個一般聊天（不是 Codex，也不是 Work）' },
+        { id: 'd1-u1-t1', section: 'u1-s4', label: '登入 ChatGPT 桌面版，開一個一般聊天（不是 Codex，切換鈕也不是「工作」）' },
         { id: 'd1-u1-t2', section: 'u1-s4', label: '在桌面建立 `AI實作` 資料夾（下載的檔案都移到這裡）' },
         { id: 'd1-u1-t3', section: 'u1-s4', label: '用貼上工具打開計時器基本版，在聊天請 AI 加「5 分鐘」按鈕與時間到變綠色' },
         { id: 'd1-u1-t4', section: 'u1-s4', label: '把 AI 改好的程式貼回貼上工具預覽，下載成 `timer.html` 並打開' }
@@ -296,7 +302,7 @@ window.COURSE = {
           blocks: [
             { type: 'heading', text: '為什麼選 ChatGPT 桌面版' },
             { type: 'list', items: [
-              '**一個 App 兩種用法**：一般聊天（免費方案不限次數，今天主要用這個）與 Codex（AI 直接在資料夾建檔、改檔，但有額度）。App 裡另外還有 **Work**，今天用不到。',
+              '**一個 App 兩種用法**：一般聊天（免費方案不限次數，今天主要用這個）與 Codex（AI 直接在資料夾建檔、改檔，但有額度）。上方的「對話／工作」切換鈕今天都用「對話」，「工作」用不到。',
               '**像聊天一樣操作**：不用學程式編輯器，也不用打指令。',
               '**Windows、macOS 都有**：下載頁 <https://openai.com/chatgpt/download/>。'
             ] },
@@ -318,18 +324,24 @@ window.COURSE = {
             { type: 'heading', text: '介面導覽（跟著講師一步一步做）' },
             { type: 'table', head: ['步驟', '做什麼', '注意'], rows: [
               ['1 登入', '打開 ChatGPT 桌面版，依畫面登入', '可能會跳到瀏覽器完成登入，再回到 App'],
-              ['2 一般聊天', '開一個新聊天（Chat，不是 Work），在輸入框貼上提示詞', '一件事一個聊天'],
+              ['2 一般聊天', '按「新對話」，上方切換鈕選「對話」（不是「工作」），在輸入框貼上提示詞', '一件事一個聊天'],
               ['3 複製回覆', '程式碼框右上角有「複製」；整段回覆下方也有複製圖示', '複製程式要按程式碼框的複製'],
-              ['4 Codex', '側邊欄或選單裡的 **Codex**（講師示範；下午 Codex 路線與 Code Review 才用）', '上午不要自己開，會用掉額度'],
+              ['4 Codex', '按左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」加入 `AI實作` 資料夾（講師示範；下午 Codex 路線與 Code Review 才用）', '上午不要自己開，會用掉額度'],
               ['5 建立資料夾', '在桌面新增資料夾 `AI實作`', '今天下載的檔案都移到這裡'],
               ['6 貼上工具', '教學網站側欄的「🛠 貼上工具」，會在彈出視窗打開', 'AI 寫好的程式貼進去，就能預覽、下載成檔案；關掉視窗回到原本讀到的地方']
             ] },
+            // 介面截圖（10 月中擷取自桌面版，側欄已打馬賽克；日期不寫成 ISO 格式，避免被開課日檢查當成範例資料）：依步驟順序排列
+            { type: 'image', name: 'app-chat.png', alt: '一般聊天畫面：上方「對話／工作」切換鈕，左上角 ChatGPT 選單', caption: '步驟 2：左上角顯示 ChatGPT，上方切換鈕選「對話」（不是「工作」），提示詞貼在下方輸入框' },
+            { type: 'image', name: 'app-codeblock.png', alt: '聊天回覆裡的程式碼框，右上角有複製按鈕，整段回覆下方也有複製圖示', caption: '步驟 3：程式碼框右上角的複製鈕只複製程式；整段回覆下方的複製圖示會連說明文字一起複製' },
+            { type: 'image', name: 'app-switch.png', alt: '左上角 ChatGPT 下拉選單，有 ChatGPT 與 Codex 兩個選項', caption: '步驟 4：按左上角的「ChatGPT ⌄」，選單裡選 Codex 就切換過去（圖為切到 Codex 後再打開選單，標題變成 Codex）；要回來就再選 ChatGPT' },
+            { type: 'image', name: 'app-codex.png', alt: 'Codex 畫面：輸入框上方有「選擇專案」，輸入框旁顯示存取權限', caption: 'Codex 畫面：先按「選擇專案」加入資料夾；輸入框旁顯示 Codex 對資料夾的存取權限（講師示範時說明）' },
+            { type: 'image', name: 'app-codex-folder.png', alt: '選擇專案的彈出清單，最下方是「新專案」', caption: '「選擇專案」→「新專案」，選桌面的 `AI實作` 資料夾；之後清單裡就會有它' },
             { type: 'note', tone: 'warn', body: '介面會隨版本更新調整，按鈕名稱與位置以講師現場畫面為準。' },
             { type: 'heading', text: '暖身操作：幫計時器加功能' },
             { type: 'text', body: '先用貼上工具打開計時器基本版（已經能開始、暫停、重設），再請 AI 加兩個功能。等一下休息 10 分鐘，就用自己改好的計時器倒數。' },
             { type: 'list', ordered: true, items: [
               '打開[貼上工具](tool.html?load=timer_基本版.html)，按「預覽」試試看基本版。',
-              '在 ChatGPT 桌面版**開一個一般聊天**（不是 Codex，也不是 Work），貼上下面的提示詞。',
+              '在 ChatGPT 桌面版**開一個一般聊天**（不是 Codex，切換鈕也不是「工作」），貼上下面的提示詞。',
               '回到貼上工具按「複製程式碼」，貼在提示詞最後一行下面，送出。',
               'AI 回覆後，按程式碼框右上角的「複製」→ 回到貼上工具按「清空」→ 貼上 → 預覽。',
               '能用就按「下載」，把 `timer.html` 移到 `AI實作` 資料夾，雙擊打開。'
@@ -741,7 +753,7 @@ function attendanceText(courseId) {
             { type: 'list', ordered: true, items: [
               '在本節最下方的素材按 `signin_基本版.html` 的「下載」（下載的檔名就是 `signin.html`），移到 `AI實作` 資料夾。',
               '確認 `AI實作` 裡有 `signin.html`、`AGENTS.md`、`docs/spec.md`、`docs/plan.md`。',
-              '在 ChatGPT 桌面版切到 **Codex**，加入 `AI實作` 資料夾，開一個新對話，貼上下面的提示詞。',
+              '在 ChatGPT 桌面版左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」加入 `AI實作` 資料夾，開一個新對話，貼上下面的提示詞。',
               'Codex 要改檔時會跳出確認，選允許。改完雙擊 `signin.html` 打開（已經開著就按 F5），照下面三張功能卡底下的「測試」逐項檢查。'
             ] },
             { type: 'prompt', id: 'p-codex-build', title: 'Codex 路線：一次補上三個功能', note: 'Codex 路線：在 Codex 貼上，它會自己讀資料夾裡的檔案', text:
@@ -842,7 +854,7 @@ F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息�
             { type: 'heading', text: 'Codex 版' },
             { type: 'list', ordered: true, items: [
               '確認 `AI實作` 資料夾裡有 `signin.html` 和 `AGENTS.md`。',
-              '在 ChatGPT 桌面版切到 **Codex**，加入 `AI實作` 資料夾，開一個新對話。',
+              '在 ChatGPT 桌面版左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」加入 `AI實作` 資料夾，開一個新對話。',
               '貼上下面的提示詞。這一步**只讀不改**，最省額度。'
             ] },
             { type: 'prompt', id: 'p-review', title: 'Code Review 與弱點掃描（Codex）', note: 'Codex 版：只讀不改', text:
