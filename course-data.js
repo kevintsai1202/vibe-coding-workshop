@@ -182,6 +182,7 @@ window.COURSE = {
     ['找不到 Codex 改好的檔案', 'Codex 直接改 `AI實作` 資料夾裡的 `signin.html`；檔案已經開著的話按 F5 重新整理，或直接問 Codex「改了哪個檔案？」'],
     ['雙擊 HTML 用了奇怪的程式打開', '在檔案上按右鍵 → 開啟檔案 → 選 Chrome 或 Edge'],
     ['改了程式，畫面沒變', '瀏覽器按 F5 重新整理'],
+    ['換了瀏覽器，報名資料不一樣（或不見了）', '資料存在打開 `signin.html` 的那個瀏覽器裡（localStorage），不在檔案或 `AI實作` 資料夾裡。換瀏覽器、換電腦、用無痕視窗都是另一份資料；今天固定用同一個瀏覽器測。要把資料帶走就按「匯出 CSV」'],
     ['`signin.html` 打開是空白頁', '確認有網路（資料庫元件從網路載入）；按 F12 看 Console 紅字，用「錯誤回報四件套」交給 AI'],
     ['匯出的 CSV 用 Excel 打開是亂碼', '請 AI 在 CSV 開頭加上 UTF-8 BOM'],
     ['AI 越改越亂', 'Codex：開新的 Codex 對話，請它先讀 `AGENTS.md`、`docs/spec.md`、`docs/plan.md`，再說明做到第幾步、哪裡有問題。規格書與計畫在一般聊天也一樣：開新聊天，貼上相關段落再說明問題'],
@@ -328,7 +329,7 @@ window.COURSE = {
               ['1 登入', '打開 ChatGPT 桌面版，依畫面登入', '可能會跳到瀏覽器完成登入，再回到 App'],
               ['2 一般聊天', '按「新對話」，上方切換鈕選「對話」（不是「工作」），在輸入框貼上提示詞', '一件事一個聊天'],
               ['3 複製回覆', '程式碼框右上角有「複製」；整段回覆下方也有複製圖示', '複製程式要按程式碼框的複製'],
-              ['4 Codex', '按左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」加入 `AI實作` 資料夾（講師示範；下午 Codex 路線與 Code Review 才用）', '上午不要自己開，會用掉額度'],
+              ['4 Codex', '按左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」加入 `AI實作` 資料夾（講師示範；下午產程式與 Code Review 才用）', '上午不要自己開，會用掉額度'],
               ['5 建立資料夾', '在桌面新增資料夾 `AI實作`', '今天下載的檔案都移到這裡'],
               ['6 貼上工具', '教學網站側欄的「🛠 貼上工具」，會在彈出視窗打開', 'AI 寫好的程式貼進去，就能預覽、下載成檔案；關掉視窗回到原本讀到的地方']
             ] },
@@ -562,7 +563,7 @@ function attendanceText(courseId) {
   const done = query('SELECT COUNT(*) AS n FROM enrollments WHERE course_id = ? AND checked_in_at IS NOT NULL', [courseId])[0].n;
   return Math.round(total / done * 100) + '%';
 }` },
-            { type: 'note', tone: 'ok', body: '**答案**：分子分母寫反了（應該是 `done / total`），而且沒人報名時要先回傳「—」，否則 0 除以 0 會變成 NaN。這正是下午功能插槽 2 要做的事。' },
+            { type: 'note', tone: 'ok', body: '**答案**：分子分母寫反了（應該是 `done / total`），而且沒人報名時要先回傳「—」，否則 0 除以 0 會變成 NaN。這正是下午 Codex 補 `attendanceText` 時要處理的事。' },
             { type: 'note', body: '修完一定要**用同一個步驟再測一次**，確認真的修好，而且其他功能沒被改壞。' }
           ]
         },
@@ -656,7 +657,7 @@ function attendanceText(courseId) {
         { name: 'u3-hero.webp', kind: 'hero', status: 'ready', alt: '行政人員在教室門口用筆電幫同仁簽到', spec: '教學研究部門口，行政人員拿著筆電幫同仁簽到，螢幕上是出席率（AI 生圖）' },
         { name: 'u3-prompt.webp', kind: 'diagram', status: 'ready', alt: '四段式指令拆解', spec: '四段式指令（目標、範圍、限制、驗收）拆解一段好提示詞（手繪 SVG）' },
         { name: 'u3-result.png', kind: 'screenshot', status: 'planned', alt: '完成的報名簽到表畫面', spec: '完成的報名簽到表畫面（講師示範版截圖）' },
-        // Codex 路線的 App 截圖（2026-10 免費帳號實測；不計入插圖上限）
+        // 下午 Codex 實作的 App 截圖（2026-10 免費帳號實測；不計入插圖上限）
         { name: 'app-codex-newproject.png', kind: 'screenshot', status: 'ready', alt: '建立專案視窗', spec: 'Codex「新專案」的建立專案視窗：標出專案名稱與來源資料夾的「新增」' },
         { name: 'app-codex-trust.png', kind: 'screenshot', status: 'ready', alt: '信任資料夾確認視窗', spec: '「要信任這個資料夾嗎」：標出「信任資料夾」' },
         { name: 'app-codex-done.png', kind: 'screenshot', status: 'ready', alt: 'Codex 做完的畫面', spec: 'Codex 做完：畫面驗收步驟、已編輯 signin.html +45 −6、查看變更' },
@@ -669,7 +670,7 @@ function attendanceText(courseId) {
         { id: 'd1-u3-t3', section: 'u3-s3', label: '用 Codex 補上簽到、出席率、匯出 CSV 三個功能，`AI實作/signin.html` 通過本節的三項測試' },
         { id: 'd1-u3-t4', section: 'u3-s5', label: '照成品驗收清單逐項測試' },
         { id: 'd1-u3-t5', section: 'u3-s5', label: '把一個錯誤交給 AI，要求先說原因、只改必要的地方' },
-        { id: 'd1-u3-t6', section: 'u3-s5', label: '做 Code Review（有 Codex 額度用 Codex 版，沒有用聊天版），挑一項高風險問題修正' },
+        { id: 'd1-u3-t6', section: 'u3-s5', label: '用 Codex 做 Code Review（額度用完才用聊天版備案），挑一項高風險（沒有就挑中風險）問題請 Codex 修正並重測' },
         { id: 'd1-u3-t7', section: 'u3-s5', label: '匯出簽到名單 CSV，用 Excel 打開確認中文不亂碼' }
       ],
       sections: [
@@ -804,7 +805,7 @@ function attendanceText(courseId) {
             { type: 'heading', text: '請 AI 自動測試' },
             { type: 'text', body: '自動測試的精神是：**規則寫成程式，每次改完都能重跑**。這個教學網站本身就是例子——講師每次修改範本，都會自動跑一遍幾十項檢查（新增課程、額滿、重複報名、簽到、出席率、CSV 的 BOM），全部通過才上線。正式系統請資訊室把驗收清單寫成自動測試，就不必每次都靠人工點。' },
             { type: 'heading', text: 'Code Review：請 AI 當審查者' },
-            { type: 'text', body: 'Code Review 就是請另一雙眼睛看程式。做法是請 AI 換成「審查者」角色，**先列出問題、不要改程式**，由你決定要修哪些。等一下還有 Codex 額度的用 Codex（它能直接讀資料夾裡的檔案），沒有額度的把整份程式貼到一般聊天，檢查項目一樣。' },
+            { type: 'text', body: 'Code Review 就是請另一雙眼睛看程式。做法是請 AI 換成「審查者」角色，**先列出問題、不要改程式**，由你決定要修哪些。等一下用 Codex 做（它直接讀資料夾裡的檔案，只讀不改，額度約 1%）；額度用完才把整份程式貼到一般聊天，檢查項目一樣。' },
             { type: 'heading', text: '弱點掃描：三個最常見的安全問題' },
             { type: 'table', head: ['問題', '白話', '怎麼防'], rows: [
               ['SQL 注入', '使用者打的字被當成資料庫指令執行，可能把整張表刪掉', 'SQL 一律用參數（`?`），不要把輸入接成字串'],
