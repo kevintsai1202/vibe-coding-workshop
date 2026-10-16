@@ -932,7 +932,7 @@
 
   /**
    * 開啟貼上工具彈窗
-   * @param {string} query 傳給工具的參數，例如 'load=timer_基本版.html' 或 'tab=slots'
+   * @param {string} query 傳給工具的參數，例如 'load=timer_基本版.html'
    */
   function openTool(query) {
     const src = 'tool.html?embed=1' + (query ? '&' + query : '');

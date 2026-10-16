@@ -9,7 +9,7 @@
  *   - 行內文字支援 **粗體**、`程式碼`、[連結](網址)、<網址>
  * 區塊（blocks）型別：text、heading、list、table、code、prompt、note、quiz、materials、image、demo
  * demo 區塊：{ type: 'demo', id: 'demo-…' }，內容在本檔 demos[]；畫面與播放邏輯在 demos.js（改台詞不必動程式）
- * 素材 type：MD、CSV、HTML（HTML 範本要有 saveAs，貼上工具的範本選單與功能插槽會用到）
+ * 素材 type：MD、CSV、HTML（HTML 範本要有 saveAs，貼上工具的範本選單會用到）
  * 插圖：assets/illustrations/*.webp（muse-image 生成，提示詞見同名 .prompt.md）
  */
 window.COURSE = {
@@ -29,8 +29,8 @@ window.COURSE = {
     mapUrl: 'https://www.google.com/maps/search/?api=1&query=%E8%87%BA%E5%8D%97%E5%B8%82%E6%AD%B8%E4%BB%81%E5%8D%80%E6%AD%B8%E4%BB%8113%E8%B7%AF%E4%B8%80%E6%AE%B56%E8%99%9F',
     instructor: '凱文大叔',
     instructorBio: '上市公司 MIS 主管，20 年以上 Java 開發經驗，近年專注 AI 應用：語言模型整合、RAG 與智能化工作流程。著作《使用 Spring AI 打造企業 RAG 知識庫》。',
-    // 實作工具：上午與規格書用一般聊天；下午產程式分 Codex 路線（付費方案）與聊天路線（免費帳號）
-    tool: 'ChatGPT 桌面版：規格書與計畫用一般聊天（免費不限次數）；下午產程式分兩條路線，付費方案用 Codex、免費帳號用聊天＋貼上工具；免費方案可完成全部實作',
+    // 實作工具：上午與規格書用一般聊天；下午產程式一律用 Codex（免費方案也可以；10 月中起不再在聊天裡產程式）
+    tool: 'ChatGPT 桌面版：上午暖身與規格書、計畫用一般聊天（免費不限次數）；下午產程式用 Codex 直接在資料夾裡做，免費方案也可以，額度用完就用完成版接著做',
     audience: '以醫院行政人員為主，也歡迎資訊人員、產品經理與專案負責人。會用電腦、瀏覽網頁即可，不需要程式背景。',
     completion: '總出席率達 80%，由工研院產業學院核發受訓證明',
     hoursTotal: 6,
@@ -148,7 +148,7 @@ window.COURSE = {
     items: [
       ['筆電', 'Windows 或 macOS 皆可，建議記憶體 8GB 以上，可連線教室無線網路'],
       ['安裝 ChatGPT 桌面版', '下載頁 <https://openai.com/chatgpt/download/>。登入與工作資料夾設定在課堂開始時由講師帶著完成'],
-      ['ChatGPT 帳號', '一組可正常使用的帳號（免費方案即可），記得帳號密碼以便課堂登入；有付費方案（Plus 等）的人，下午可以走 Codex 路線'],
+      ['ChatGPT 帳號', '一組可正常使用的帳號（免費方案即可），記得帳號密碼以便課堂登入；免費方案也能用 Codex，額度按月計算'],
       ['先備知識', '會基本電腦操作與網頁瀏覽即可，不需要程式設計背景'],
       ['瀏覽器', 'Chrome 或 Edge（macOS 也可用 Safari），用來打開自己做的網頁'],
       ['不用安裝的東西', 'Git、Node.js、Python 都不用裝：今天的成品是單一網頁檔，資料庫元件從網路載入。依 OpenAI 文件這些對 Codex 都是選用，少了 Git 只是 Codex 的「查看變更」可能不顯示']
@@ -157,7 +157,7 @@ window.COURSE = {
     folderTree: `桌面/
 └── AI實作/
     ├── timer.html         ← 單元一：貼上工具下載
-    ├── signin.html        ← 單元三：Codex 路線由 Codex 直接改；聊天路線用貼上工具組合後下載
+    ├── signin.html        ← 單元三：先放基本版，再由 Codex 直接補上三個功能
     ├── AGENTS.md          ← 單元三：網站下載（Codex 開工前會讀）
     └── docs/
         ├── spec.md         ← 實作演練 1：聊天匯出 Markdown 後改名
@@ -171,7 +171,7 @@ window.COURSE = {
   faq: [
     ['忘記 ChatGPT 帳號密碼', '在登入畫面用「忘記密碼」重設；來不及的先和隔壁同學一起看，休息時間再處理'],
     ['畫面上有「對話」「工作」和 Codex，不知道開哪個', '今天的「一般聊天」是上方切換鈕的「對話」；「工作」今天用不到；Codex 在左上角「ChatGPT ⌄」選單裡，只在下午用。按鈕名稱與位置以講師現場畫面為準'],
-    ['找不到 Codex', '按左上角的「ChatGPT ⌄」，選單裡選 Codex；上午用不到，下午 Codex 路線與 Code Review 時講師會帶'],
+    ['找不到 Codex', '按左上角的「ChatGPT ⌄」，選單裡選 Codex；上午用不到，下午產程式與 Code Review 時講師會帶'],
     ['下載的檔案在哪裡', '瀏覽器預設存在「下載」資料夾，請移到桌面的 `AI實作` 資料夾'],
     ['匯出的檔案叫 writing-block.md', '這是 ChatGPT 匯出 Markdown 的固定檔名，在「下載」資料夾把它改名成 `spec.md` 或 `plan.md`，再移到 `AI實作/docs`'],
     ['回覆沒有「寫作」區塊、找不到下載', '按回覆下方的「複製」圖示，貼到貼上工具，檔名改好再下載'],
@@ -184,8 +184,8 @@ window.COURSE = {
     ['改了程式，畫面沒變', '瀏覽器按 F5 重新整理'],
     ['`signin.html` 打開是空白頁', '確認有網路（資料庫元件從網路載入）；按 F12 看 Console 紅字，用「錯誤回報四件套」交給 AI'],
     ['匯出的 CSV 用 Excel 打開是亂碼', '請 AI 在 CSV 開頭加上 UTF-8 BOM'],
-    ['AI 越改越亂', '聊天路線：開新聊天，貼上 spec.md 相關段落與要改的那個函式，說明做到第幾步、哪裡有問題。Codex 路線：開新的 Codex 對話，請它先讀 `AGENTS.md`、`docs/spec.md`、`docs/plan.md` 再說明問題'],
-    ['Codex 顯示額度用完', '一般聊天不受影響：產程式改走聊天路線（貼上工具的功能插槽），Code Review 改用聊天版提示詞（《CodeReview提示詞》有寫）'],
+    ['AI 越改越亂', 'Codex：開新的 Codex 對話，請它先讀 `AGENTS.md`、`docs/spec.md`、`docs/plan.md`，再說明做到第幾步、哪裡有問題。規格書與計畫在一般聊天也一樣：開新聊天，貼上相關段落再說明問題'],
+    ['Codex 顯示額度用完', '一般聊天不受影響。產程式：下載 `signin_完成版.html`（檔名就是 signin.html）覆蓋後接著做驗收；Code Review：改用聊天版提示詞（《CodeReview提示詞》有寫；整份程式貼上會變成附件，免費一天只有幾次，只做一次）'],
     ['想把測試資料清掉重來', '按 `signin.html` 最下方的「重設為示範資料」']
   ],
 
@@ -248,7 +248,7 @@ window.COURSE = {
               '**只用假資料**。不要把真實員工、病人資料、帳號密碼貼給 AI。',
               '**提示詞可以直接複製**。網站上每一段提示詞都有「複製」按鈕，先照貼，熟了再改。',
               '**卡住就用參考答案**。每個實作都有參考答案檔，接著做下去就好，不會被落下。',
-              '**額度要花在刀口上**。一般聊天免費不限次數，暖身、規格書、計畫都在聊天完成；Codex（AI 直接在資料夾動手）有額度，留到下午產程式時才用。沒有付費方案也沒關係，下午有免費的聊天路線，一樣做得完。'
+              '**額度要花在刀口上**。一般聊天免費不限次數，暖身、規格書、計畫都在聊天完成；Codex（AI 直接在資料夾動手）有額度，留到下午產程式時才用。免費方案也能用 Codex；額度用完就用講師的完成版接著做驗收與 Code Review，一樣做得完。'
             ] },
             { type: 'quiz', id: 'q1' }
           ]
@@ -316,16 +316,11 @@ window.COURSE = {
             { type: 'table', head: ['', '一般聊天', 'Codex'], rows: [
               ['AI 怎麼幫你', '在對話裡寫出內容或程式，你複製出來存成檔案', '直接讀寫你指定的資料夾'],
               ['免費方案', '文字聊天不限次數（2026 年 8 月起）', '有額度，免費方案按月計算：頭像選單的「剩餘用量」看得到剩幾 % 與重置日。講師實測：做一個計時器用掉約四成，一次只讀不改的 Code Review 約 1%'],
-              ['今天用在', '暖身、除錯練習、規格書、開發計畫；下午聊天路線的三個功能', '下午 Codex 路線的三個功能、Code Review']
+              ['今天用在', '暖身、除錯練習、規格書、開發計畫', '下午的三個功能、Code Review']
             ] },
-            // 下午兩條路線：付費方案走 Codex、免費帳號走聊天（內容與 content.md u1-s4 同步）
-            { type: 'heading', text: '下午產程式：兩條路線' },
-            { type: 'table', head: ['你的帳號', '實作演練 2-A 產程式', '實作演練 2-B Code Review'], rows: [
-              ['付費方案（Plus 等）', '**Codex 路線**：Codex 讀規格書與計畫，直接把三個功能寫進 `signin.html`', 'Codex'],
-              ['免費方案', '**聊天路線**：一般聊天每次寫一個函式，貼上工具組合成 `signin.html`（想體驗 Codex 也可以試，額度用完就改回聊天）', '還有 Codex 額度就用 Codex，沒有就用聊天版']
-            ] },
-            { type: 'text', body: '兩條路線做出來的 `signin.html` 一樣，驗收清單也一樣。**免費方案可以完成全部實作**。' },
-            { type: 'image', name: 'app-usage.png', alt: '左下角頭像選單展開「剩餘用量」，顯示 1 個月、剩餘百分比與重置日期', caption: '額度看這裡：左下角頭像 →「剩餘用量」。免費方案按月計算，顯示剩幾 % 與哪天重置；下午走 Codex 路線前先看一眼' },
+            { type: 'heading', text: '下午產程式用 Codex' },
+            { type: 'text', body: '下午的三個功能一律用 **Codex**：它讀資料夾裡的規格書與計畫，直接把程式寫進 `AI實作/signin.html`，你只要測試、驗收。免費方案也可以用 Codex，額度按月計算；用完就下載講師的完成版接著做驗收與 Code Review。**免費方案可以完成全部實作**。' },
+            { type: 'image', name: 'app-usage.png', alt: '左下角頭像選單展開「剩餘用量」，顯示 1 個月、剩餘百分比與重置日期', caption: '額度看這裡：左下角頭像 →「剩餘用量」。免費方案按月計算，顯示剩幾 % 與哪天重置；下午用 Codex 前先看一眼' },
             { type: 'note', body: '**額度是真實的成本**：講師會示範一次 Codex，讓大家看它讀檔、建檔的過程，也看額度怎麼掉。所以今天把 Codex 留到下午產程式與 Code Review，其他都在聊天裡做。' },
             { type: 'quiz', id: 'q12' },
             { type: 'heading', text: '介面導覽（跟著講師一步一步做）' },
@@ -670,8 +665,8 @@ function attendanceText(courseId) {
       ],
       tasks: [
         { id: 'd1-u3-t1', section: 'u3-s2', label: '把 `AGENTS.md` 放進 `AI實作` 資料夾（Codex 開工前會先讀它）' },
-        { id: 'd1-u3-t2', section: 'u3-s3', label: '用貼上工具打開報名簽到表基本版，確認開課、報名、額滿、重複報名都能用' },
-        { id: 'd1-u3-t3', section: 'u3-s3', label: '完成簽到、出席率、匯出 CSV 三個功能（Codex 路線或聊天路線擇一），`signin.html` 放進 `AI實作`' },
+        { id: 'd1-u3-t2', section: 'u3-s3', label: '下載報名簽到表基本版成 `AI實作/signin.html`，打開確認開課、報名、額滿、重複報名都能用' },
+        { id: 'd1-u3-t3', section: 'u3-s3', label: '用 Codex 補上簽到、出席率、匯出 CSV 三個功能，`AI實作/signin.html` 通過本節的三項測試' },
         { id: 'd1-u3-t4', section: 'u3-s5', label: '照成品驗收清單逐項測試' },
         { id: 'd1-u3-t5', section: 'u3-s5', label: '把一個錯誤交給 AI，要求先說原因、只改必要的地方' },
         { id: 'd1-u3-t6', section: 'u3-s5', label: '做 Code Review（有 Codex 額度用 Codex 版，沒有用聊天版），挑一項高風險問題修正' },
@@ -720,19 +715,19 @@ function attendanceText(courseId) {
             { type: 'demo', id: 'demo-context' },
             { type: 'heading', text: '使用成本怎麼省' },
             { type: 'list', items: [
-              '一般聊天不限次數，**主要工作放在聊天**；Codex 有額度，留給下午產程式、Code Review 這類要讀寫整個檔案的工作（沒有額度就走聊天路線）。',
+              '一般聊天不限次數，**主要工作放在聊天**；Codex 有額度，留給下午產程式、Code Review 這類要讀寫整個檔案的工作（額度用完就用完成版接著做）。',
               '請 AI **只改一個函式**，不要每次重寫整個檔案：回覆短、不容易漏，也不會改壞已經正常的地方。',
               '一次把話說清楚，比來回問五次省。',
-              '素材用「複製全文」貼上，不用上傳檔案（檔案上傳另有額度）。'
+              '素材用「複製全文」貼上，不用上傳檔案（檔案上傳另有額度）；貼超過幾千字也會自動變成附件、算進同一個額度，所以整份程式不要貼進聊天。'
             ] },
             { type: 'quiz', id: 'q10' },
             { type: 'heading', text: '幫專案立規矩：AGENTS.md' },
-            { type: 'text', body: '每次都要重講一次「用繁體中文、SQL 用參數、不要自己加功能」很累。Codex 開工前會先讀資料夾裡的 `AGENTS.md`，把規矩寫在這個檔案，等於每次都有人先跟 AI 交代清楚。下午走 Codex 路線寫程式、或用 Codex 做 Code Review 時，它都會先讀這份。' },
-            { type: 'text', body: '一般聊天沒有 AGENTS.md 可讀，所以聊天路線的功能卡**把規矩直接寫在提示詞裡**（SQL 用參數、中文註解、只回傳一個函式）——道理一樣：規矩寫在固定的地方，每次開工都附上。' },
+            { type: 'text', body: '每次都要重講一次「用繁體中文、SQL 用參數、不要自己加功能」很累。Codex 開工前會先讀資料夾裡的 `AGENTS.md`，把規矩寫在這個檔案，等於每次都有人先跟 AI 交代清楚。下午用 Codex 補功能、做 Code Review 時，它都會先讀這份。' },
+            { type: 'text', body: '一般聊天沒有 AGENTS.md 可讀，所以上午的提示詞**把規矩直接寫在提示詞裡**（只改必要的地方、回傳完整程式）——道理一樣：規矩寫在固定的地方，每次開工都附上。' },
             { type: 'table', head: ['區塊', '寫什麼'], rows: [
               ['這是什麼專案', '一句話說明，以及使用者是誰'],
-              ['檔案與技術', '單一 HTML、功能插槽的位置、sql.js、資料存在哪裡'],
-              ['寫程式的規矩', '中文註解、SQL 用參數、顯示前跳脫、只改插槽'],
+              ['檔案與技術', '單一 HTML、三個預留函式的位置、sql.js、資料存在哪裡'],
+              ['寫程式的規矩', '中文註解、SQL 用參數、顯示前跳脫、只改預留的位置'],
               ['溝通方式', '動手前先說要改哪裡、Code Review 只讀不改、不確定就問']
             ] },
             { type: 'text', body: '現在就下載 `AGENTS.md`，放進 `AI實作` 資料夾（跟 `docs` 同一層）：' },
@@ -742,43 +737,37 @@ function attendanceText(courseId) {
         {
           id: 'u3-s3', title: '【實作演練 2-A】依規格做出成品', time: '14:45–15:35', minutes: 50, kind: 'lab',
           blocks: [
-            { type: 'text', body: '**目標**：從講師準備的基本版出發，補上簽到、出席率、匯出 CSV 三個功能，做出 `signin.html`。付費方案走 Codex 路線，免費帳號走聊天路線，兩條做出來的檔案一樣。' },
+            { type: 'text', body: '**目標**：從講師準備的基本版出發，用 Codex 補上簽到、出席率、匯出 CSV 三個功能，做出 `signin.html`。免費方案也可以用 Codex；額度用完就下載完成版接著做後面的驗收與 Code Review。' },
             { type: 'heading', text: '先看基本版（5 分）' },
-            { type: 'text', body: '打開[貼上工具的功能插槽](tool.html?tab=slots)，什麼都不填，直接按「組合並預覽」，看到的就是基本版：' },
+            { type: 'list', ordered: true, items: [
+              '在本節最下方的素材按 `signin_基本版.html` 的「下載」（下載的檔名就是 `signin.html`），移到桌面的 `AI實作` 資料夾。',
+              '雙擊 `signin.html` 用瀏覽器打開，照下面逐項點一遍：'
+            ] },
             { type: 'list', check: true, items: [
               '兩堂示範課程，消防安全講習顯示 4 / 40 人',
               '新增一堂課，清單立刻出現',
               '「個資保護與資安宣導」報名一人 → 3 / 3；再報一人 → 顯示「名額已滿」',
               '同一員工編號在同一堂課報第二次 → 顯示「已報名過」',
-              '按「簽到」、看出席率、按「匯出 CSV」→ 都顯示還沒做（這就是你要完成的三個功能）'
+              '按「簽到」、看出席率、按「匯出 CSV」→ 都顯示還沒做（這就是你要請 Codex 補上的三個功能）'
             ] },
-            { type: 'heading', text: '為什麼只請 AI 寫一個函式' },
-            { type: 'text', body: '整份檔案四百多行，每次請 AI 重寫整份，回覆很長、常偷懶寫「其餘不變」，還可能改壞已經正常的地方。基本版把三個功能的位置先留好（**功能插槽**），AI 每次只寫一個函式：短、準、好驗收。這也是實務上改既有系統的做法——只動需要動的地方。Codex 路線也一樣：Codex 只改三個插槽，基本版其他地方不動。' },
-            { type: 'table', head: ['插槽', '函式', '功能'], rows: [
+            { type: 'heading', text: '為什麼只做第二步、只改預留的位置' },
+            { type: 'text', body: '整份檔案四百多行，叫 AI「一次全部做完」或「整份重寫」，容易改壞已經正常的地方，也難驗收。所以 `plan.md` 把工作拆成三步，基本版把三個功能的位置先留好（程式裡標著「功能插槽 1～3」的三個空函式），這次只請 Codex 做第二步、只改這三處。這也是實務上改既有系統的做法——只動需要動的地方，改完馬上驗收。' },
+            { type: 'table', head: ['預留位置', '函式', '功能'], rows: [
               ['1', '`checkIn(enrollmentId)`', '簽到'],
               ['2', '`attendanceText(courseId)`', '出席率文字'],
               ['3', '`exportCsv(courseId)`', '匯出簽到名單 CSV']
             ] },
             { type: 'demo', id: 'demo-slots' },
-            // 兩條路線：付費方案走 Codex、免費帳號走聊天（verify-data 檢查兩條都有提示詞）
-            { type: 'heading', text: '選一條路線' },
-            { type: 'table', head: ['', 'Codex 路線', '聊天路線（免費）'], rows: [
-              ['誰走', '付費方案（Plus 等）', '免費帳號（預設）；付費但想省額度的人也可以'],
-              ['AI 怎麼做', 'Codex 讀 `AGENTS.md`、`docs/spec.md`、`docs/plan.md`，直接把三個函式寫進 `AI實作/signin.html`', '一般聊天每次寫一個函式，你貼回貼上工具的插槽，組合後下載'],
-              ['用到的額度', '一次 Codex 任務', '不用 Codex 額度'],
-              ['做完的檔案', '`AI實作/signin.html` 已經改好', '貼上工具組合後下載的 `signin.html`']
-            ] },
-            { type: 'note', body: '**免費帳號想試 Codex 路線也可以**：講師實測免費額度做一個計時器就用掉四成，三個功能可能做不完。做到一半額度用完，就改走聊天路線，已經做好的函式不會白費。' },
-            { type: 'heading', text: 'Codex 路線（付費方案）' },
+            { type: 'heading', text: '用 Codex 補上三個功能（30 分）' },
             { type: 'list', ordered: true, items: [
-              '在本節最下方的素材按 `signin_基本版.html` 的「下載」（下載的檔名就是 `signin.html`），移到 `AI實作` 資料夾。',
               '確認 `AI實作` 裡有 `signin.html`、`AGENTS.md`、`docs/spec.md`、`docs/plan.md`。',
-              '在 ChatGPT 桌面版左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」：專案名稱填 `AI實作`，來源資料夾按「新增」選桌面的 `AI實作`，按「建立專案」；跳出「要信任這個資料夾嗎」就按「信任資料夾」。然後貼上下面的提示詞。',
-              'Codex 要改檔時會跳出確認，選允許。改完雙擊 `signin.html` 打開（已經開著就按 F5），照下面三張功能卡底下的「測試」逐項檢查。'
+              '在 ChatGPT 桌面版左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」：專案名稱填 `AI實作`，來源資料夾按「新增」選桌面的 `AI實作`，按「建立專案」；跳出「要信任這個資料夾嗎」就按「信任資料夾」。',
+              '貼上下面的提示詞送出。Codex 會先說它的理解，然後直接開始改；要改檔時跳出確認就選允許。',
+              '做完後雙擊 `signin.html` 打開（已經開著就按 F5），照下面的「測試」逐項檢查。'
             ] },
             { type: 'image', name: 'app-codex-newproject.png', alt: '建立專案視窗：上方填專案名稱，來源資料夾區有「新增」按鈕', caption: '「選擇專案」→「新專案」：填專案名稱，來源資料夾按「新增」選桌面的 AI實作，再按「建立專案」' },
             { type: 'image', name: 'app-codex-trust.png', alt: '「要信任這個資料夾嗎」確認視窗，下方有「信任資料夾」按鈕', caption: '第一次加入資料夾會問「要信任這個資料夾嗎」：按「信任資料夾」，Codex 才能讀寫裡面的檔案' },
-            { type: 'prompt', id: 'p-codex-build', title: 'Codex 路線：一次補上三個功能', note: 'Codex 路線：在 Codex 貼上，它會自己讀資料夾裡的檔案', text:
+            { type: 'prompt', id: 'p-codex-build', title: '用 Codex 一次補上三個功能', note: '在 Codex 貼上；它會自己讀資料夾裡的檔案', text:
 `請先讀 AGENTS.md、docs/spec.md、docs/plan.md 和 signin.html。
 這次只做 plan.md 的第二步：把 signin.html 預留的三個功能插槽寫好——
 1. checkIn(enrollmentId)：簽到，已經簽到過要擋下來
@@ -788,44 +777,16 @@ function attendanceText(courseId) {
 資料表欄位和 query、run、save、render、showMsg、nowText、downloadFile 這些函式，以 signin.html 現有的為準。
 動手前先用三句話說你的理解，說完直接開始改，不用等我回覆。
 做完告訴我：改了哪三個函式、我要怎麼在畫面上逐項驗收。` },
-            { type: 'image', name: 'app-codex-done.png', alt: 'Codex 做完的回覆：列出畫面驗收步驟，下方顯示已編輯 signin.html +45 −6 與「查看變更」按鈕', caption: '做完的樣子：它會告訴你怎麼驗收，下方顯示改了哪個檔、加減幾行。講師實測（免費方案、6 Luna 中）：約 2 分鐘、+45 −6，三個插槽都填好' },
+            { type: 'image', name: 'app-codex-done.png', alt: 'Codex 做完的回覆：列出畫面驗收步驟，下方顯示已編輯 signin.html +45 −6 與「查看變更」按鈕', caption: '做完的樣子：它會告訴你怎麼驗收，下方顯示改了哪個檔、加減幾行。講師實測（免費方案、6 Luna 中）：約 2 分鐘、+45 −6，三個函式都補好' },
             { type: 'image', name: 'app-codex-diff.png', alt: '按「查看變更」後右側面板逐行顯示差異：紅色是刪掉的、綠色是加上的', caption: '按「查看變更」可以逐行看它改了什麼：紅色刪、綠色加；不對可以按「復原」' },
-            { type: 'text', body: '測試沒通過：在同一個 Codex 對話貼「錯誤回報四件套」（單元二「用 AI 找錯與修正程式碼」的提示詞），最後加一句「只改那個插槽的函式」；改完按 F5 再測同一項。' },
-            { type: 'note', tone: 'warn', body: '**Codex 額度用完或做不出來？** 改走下面的聊天路線，從還沒做好的插槽開始。Codex 已經做好的函式不用重做：在瀏覽器打開 `signin.html` 按 `Ctrl + U`（Mac：`Cmd + Option + U`）看原始碼，把該插槽「開始」與「結束」標記之間的函式複製到貼上工具對應的插槽。' },
-            { type: 'heading', text: '聊天路線（免費帳號）：三張功能卡' },
-            { type: 'note', body: '**做法（每張功能卡都一樣）**：在貼上工具按該插槽的「複製功能卡提示詞」→ 貼到 ChatGPT 一般聊天 → 把 AI 回的函式貼回同一個插槽 → 組合並預覽 → 測試。三張卡可以在同一個聊天接著做。' },
-            { type: 'heading', text: '功能卡 1：簽到（15 分）' },
-            { type: 'prompt', id: 'p-slot-1', title: '功能卡 1：簽到', note: '聊天路線：一般聊天，AI 回的函式貼到功能插槽 1', text:
-`我在做一個單一網頁檔的教育訓練報名簽到表（資料庫是瀏覽器裡的 SQLite）。
-請幫我寫一個 JavaScript 函式 checkIn(enrollmentId)，我會把它貼進程式預留的位置。
-【可以直接用的工具】query(sql, 參數陣列) 查詢並回傳物件陣列；run(sql, 參數陣列) 執行修改；save() 存檔；render() 重畫畫面；showMsg(文字, 'ok' 或 'error') 顯示訊息；nowText() 回傳現在時間
-【資料表】enrollments(id, course_id, emp_no, name, dept, enrolled_at, checked_in_at)；checked_in_at 是空的（NULL）代表還沒簽到
-【要做的事】找出這筆報名；已經簽到過就顯示錯誤「〇〇〇 已經簽到過了」並結束；否則把 checked_in_at 設成 nowText()，然後 save()、render()，顯示「〇〇〇 簽到完成」
-【規定】SQL 一律用 ? 參數；每段加一行繁體中文註解；只回傳這一個函式，放在一個程式碼區塊裡` },
-            { type: 'text', body: '測試：在名單按林志明的「簽到」→ 顯示簽到時間、按鈕消失。' },
-            { type: 'heading', text: '功能卡 2：出席率（10 分）' },
-            { type: 'prompt', id: 'p-slot-2', title: '功能卡 2：出席率', note: '聊天路線：同一個聊天，AI 回的函式貼到功能插槽 2', text:
-`同一個報名簽到表，請再寫一個 JavaScript 函式 attendanceText(courseId)，回傳這堂課的出席率文字。
-【可以直接用的工具】query(sql, 參數陣列) 查詢並回傳物件陣列，例如 query('SELECT COUNT(*) AS n FROM enrollments WHERE course_id = ?', [courseId])[0].n
-【資料表】enrollments(id, course_id, emp_no, name, dept, enrolled_at, checked_in_at)；checked_in_at 有值代表已簽到
-【規則】出席率 = 已簽到人數 ÷ 報名人數，四捨五入到整數，回傳像「75%」的文字；沒人報名時回傳「—」
-【規定】SQL 一律用 ? 參數；加繁體中文註解；只回傳這一個函式，放在一個程式碼區塊裡` },
-            { type: 'text', body: '測試：消防安全講習 50%（簽到林志明後 75%）；新增、沒人報名的課顯示「—」。' },
-            { type: 'heading', text: '功能卡 3：匯出 CSV（15 分）' },
-            { type: 'prompt', id: 'p-slot-3', title: '功能卡 3：匯出 CSV', note: '聊天路線：同一個聊天，AI 回的函式貼到功能插槽 3', text:
-`同一個報名簽到表，請再寫一個 JavaScript 函式 exportCsv(courseId)，把這堂課的簽到名單下載成 CSV。
-【可以直接用的工具】query(sql, 參數陣列) 查詢並回傳物件陣列；showMsg(文字, 'ok' 或 'error')；downloadFile(檔名, 內容, 'text/csv;charset=utf-8') 讓瀏覽器下載檔案
-【資料表】courses(id, title, date, start_time, location, capacity, hours)；enrollments(id, course_id, emp_no, name, dept, enrolled_at, checked_in_at)
-【要做的事】第一列是表頭：課程名稱,上課日期,員工編號,姓名,單位,簽到狀態,簽到時間；每位報名者一列，簽到狀態寫「已簽到」或「未簽到」；檔名「簽到名單_課程名稱.csv」
-【規則】內容開頭加 UTF-8 BOM（'\\uFEFF'），Excel 打開中文才不會亂碼；欄位有逗號或雙引號時要用雙引號包起來
-【規定】SQL 一律用 ? 參數；加繁體中文註解；只回傳這一個函式，放在一個程式碼區塊裡` },
-            { type: 'text', body: '測試：在消防安全講習按「匯出 CSV」，用 Excel 打開，中文正常、有簽到時間。' },
-            { type: 'heading', text: '組合、下載、放進資料夾（5 分）' },
+            { type: 'heading', text: '測試（10 分）' },
             { type: 'list', check: true, items: [
-              '三個插槽都顯示「已填」，按「組合並預覽」逐項測過',
-              '按「下載 signin.html」，把檔案移到 `AI實作` 資料夾（等一下測試與 Code Review 都用它）'
+              '簽到：在消防安全講習的名單按林志明的「簽到」→ 顯示簽到時間、按鈕消失；陳美玲已經簽到過，不會再有簽到鈕',
+              '出席率：消防安全講習 75%（簽到林志明後）、個資保護與資安宣導 0%；新增一堂沒人報名的課 → 顯示「—」',
+              '匯出 CSV：在消防安全講習按「匯出 CSV」，用 Excel 打開 → 中文正常、4 筆資料、有簽到狀態與時間'
             ] },
-            { type: 'note', tone: 'warn', body: '**卡住時**：某個插槽做不出來，就按該插槽的「填入完成版（救援）」接著做下一個。AI 回的函式名稱不對、多包了 `<script>`、或重新定義了基本版的函式，貼上工具都會提醒。' },
+            { type: 'text', body: '沒通過的項目：在同一個 Codex 對話貼「錯誤回報四件套」（單元二「用 AI 找錯與修正程式碼」的提示詞），最後加一句「只改那個函式」；改完按 F5 再測同一項。' },
+            { type: 'note', tone: 'warn', body: '**Codex 額度用完或做不出來？** 在本節素材按 `signin_完成版.html` 的「下載」（檔名也是 `signin.html`），覆蓋 `AI實作` 裡的檔案，接著做後面的驗收與 Code Review，不要再花時間重試。做到一半的也一樣：下載完成版最快。' },
             { type: 'materials', names: ['signin_基本版.html', 'signin_完成版.html'] }
           ]
         },
@@ -859,29 +820,16 @@ function attendanceText(courseId) {
           id: 'u3-s5', title: '【實作演練 2-B】測試、除錯與 Code Review', time: '15:55–16:20', minutes: 25, kind: 'lab',
           blocks: [
             { type: 'heading', text: '步驟 1：跑驗收清單（10 分）' },
-            { type: 'text', body: '用下載到 `AI實作` 的 `signin.html` 測（貼上工具的預覽不會保存資料，第 12 項要用下載的檔案才測得出來）。先按頁面最下方的「重設為示範資料」，再照《成品驗收清單》逐項測試並打勾。' },
+            { type: 'text', body: '用 `AI實作` 裡的 `signin.html` 測。先按頁面最下方的「重設為示範資料」，再照《成品驗收清單》逐項測試並打勾。' },
             { type: 'materials', names: ['成品驗收清單.md'] },
-            { type: 'text', body: '沒通過的項目：' },
-            { type: 'text', body: '**聊天路線**：在一般聊天用下面這段，把那個插槽的函式和錯誤一起交給 AI：' },
-            { type: 'prompt', id: 'p-slot-fix', title: '插槽修正', note: '聊天路線：一般聊天，後面接著貼上那個插槽的函式', text:
-`我把你寫的函式 [函式名稱] 貼進報名簽到表後，[發生了什麼]。
-我預期看到：[應該要怎樣]。
-F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息」]
-下面是我貼上的函式。請先告訴我原因，再回傳修正後的完整函式，只改必要的地方：
-
-（在這一行下面貼上那個插槽的函式）` },
-            { type: 'text', body: '修好的函式貼回貼上工具的插槽 → 組合 → 下載覆蓋 `signin.html` → 再測同一項。' },
-            { type: 'text', body: '**Codex 路線**：在同一個 Codex 對話貼「錯誤回報四件套」（單元二「用 AI 找錯與修正程式碼」的提示詞），最後加一句「只改那個插槽的函式」；改完按 F5 再測同一項。' },
-            // Code Review 兩版並列：有 Codex 額度用 Codex 版，沒有用聊天版（免費）
+            { type: 'text', body: '沒通過的項目：在同一個 Codex 對話貼「錯誤回報四件套」（單元二「用 AI 找錯與修正程式碼」的提示詞），最後加一句「只改那個函式」；改完按 F5 再測同一項。Codex 額度用完的人：把沒過的項目記下來，額度恢復後再修。' },
             { type: 'heading', text: '步驟 2：Code Review 與弱點掃描（10 分）' },
-            { type: 'text', body: 'Code Review 要讀整個檔案。還有 Codex 額度的用 **Codex 版**（Codex 直接讀資料夾裡的檔案，只讀不改）；沒有額度的用 **聊天版**，把整份程式貼給 AI。兩版檢查的五項一樣。' },
-            { type: 'heading', text: 'Codex 版' },
+            { type: 'text', body: 'Code Review 要讀整個檔案，這正是 Codex 擅長的：它直接讀資料夾裡的檔案，**只讀不改**，用掉的額度很少（講師實測約 1%）。' },
             { type: 'list', ordered: true, items: [
               '確認 `AI實作` 資料夾裡有 `signin.html` 和 `AGENTS.md`。',
-              '在 ChatGPT 桌面版左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」加入 `AI實作` 資料夾（上午已加過就直接選它），開一個新對話。',
-              '貼上下面的提示詞。這一步**只讀不改**，最省額度。'
+              '在同一個 Codex 專案開一個**新對話**（左側「新對話」），貼上下面的提示詞。'
             ] },
-            { type: 'prompt', id: 'p-review', title: 'Code Review 與弱點掃描（Codex）', note: 'Codex 版：只讀不改', text:
+            { type: 'prompt', id: 'p-review', title: 'Code Review 與弱點掃描（Codex）', note: 'Codex：只讀不改', text:
 `請讀 AGENTS.md 和 signin.html，以資安審查者的角度做 Code Review。
 這次只要讀、不要修改任何檔案，逐項回報：
 1. SQL 注入：有沒有 SQL 是把使用者輸入直接接成字串？
@@ -890,14 +838,9 @@ F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息�
 4. 資料外洩：瀏覽器儲存與匯出的 CSV，有沒有多存或多帶不需要的資料？
 5. 邏輯錯誤：沒人報名、名額剛好滿、同名不同員編時，會不會算錯？
 每一項寫：在哪個函式、什麼問題、風險高／中／低、建議怎麼修。` },
-            { type: 'image', name: 'app-review-result.png', alt: 'Codex 的 Code Review 回覆：每一項列出位置、問題、風險等級與建議，並附程式行號連結', caption: 'Codex 版的回報長這樣：每項有位置、問題、風險、建議，點行號會跳到程式。講師實測只讀不改約 50 秒、額度約 1%' },
-            { type: 'heading', text: '聊天版（免費）' },
-            { type: 'list', ordered: true, items: [
-              '在瀏覽器打開 `AI實作/signin.html`，按 `Ctrl + U`（Mac：`Cmd + Option + U`）打開原始碼。',
-              '按 `Ctrl + A` 全選、`Ctrl + C` 複製（Mac：`Cmd + A`、`Cmd + C`）。',
-              '開一個新的一般聊天，貼上下面的提示詞，再把程式貼在最後一行下面，送出。'
-            ] },
-            { type: 'prompt', id: 'p-review-chat', title: 'Code Review 與弱點掃描（聊天版）', note: '聊天版：免費，後面接著貼上 signin.html 的完整程式', text:
+            { type: 'image', name: 'app-review-result.png', alt: 'Codex 的 Code Review 回覆：每一項列出位置、問題、風險等級與建議，並附程式行號連結', caption: '回報長這樣：每項有位置、問題、風險、建議，點行號會跳到程式。講師實測只讀不改約 50 秒、額度約 1%' },
+            { type: 'note', tone: 'warn', body: '**Codex 額度用完了？** 改用聊天版：在瀏覽器打開 `AI實作/signin.html` 按 `Ctrl + U`（Mac：`Cmd + Option + U`）看原始碼，`Ctrl + A` 全選、`Ctrl + C` 複製，開一個新的一般聊天貼上下面的提示詞，再把程式貼在最後一行下面。注意：這麼長的程式貼進聊天會自動變成**附件**，免費方案的附件一天只有幾次，所以只做這一次。' },
+            { type: 'prompt', id: 'p-review-chat', title: 'Code Review 與弱點掃描（聊天版備案）', note: '備案：一般聊天，後面接著貼上 signin.html 的完整程式（會變成附件，免費一天只有幾次）', text:
 `下面是一個網頁檔 signin.html 的完整程式（教育訓練報名簽到表，資料庫是瀏覽器裡的 SQLite）。
 請以資安審查者的角度做 Code Review。這次只要找問題、不要改寫程式，逐項回報：
 1. SQL 注入：有沒有 SQL 是把使用者輸入直接接成字串？
@@ -908,22 +851,14 @@ F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息�
 每一項寫：在哪個函式、什麼問題、風險高／中／低、建議怎麼修。
 
 （在這一行下面貼上 signin.html 的完整程式）` },
-            // 修正也分兩條：聊天路線改插槽、Codex 路線請 Codex 直接改檔
             { type: 'heading', text: '步驟 3：修一項高風險問題（5 分）' },
-            { type: 'text', body: '**聊天路線**：' },
-            { type: 'prompt', id: 'p-fix', title: '修正高風險問題（聊天）', note: '聊天路線：一般聊天，後面接著貼上那個插槽的函式', text:
-`Code Review 說我的函式 [函式名稱] 有這個問題：[貼上 Review 裡那一項]。
-請修正並回傳完整的函式，只改必要的地方，放在一個程式碼區塊裡：
-
-（在這一行下面貼上那個插槽的函式）` },
-            { type: 'text', body: '修好的函式貼回插槽 → 組合 → 下載覆蓋 `signin.html`。' },
-            { type: 'text', body: '**Codex 路線**：在 Codex 貼上下面這段（Code Review 是在聊天做的，就把那一項複製過來）。' },
-            { type: 'prompt', id: 'p-fix-codex', title: '修正高風險問題（Codex）', note: 'Codex 路線：Codex 直接改 signin.html', text:
+            { type: 'text', body: '回到剛才做功能的那個 Codex 對話，貼上下面這段（Code Review 若是在聊天做的，就把那一項複製過來）。' },
+            { type: 'prompt', id: 'p-fix-codex', title: '修正高風險問題（Codex）', note: 'Codex 直接改 signin.html', text:
 `請修正 Code Review 的這一項：[貼上 Review 裡那一項]。
 只改那個函式，其他地方不要動。
 改完告訴我改了哪裡、要重測驗收清單的哪一項。` },
             { type: 'text', body: '改完按 F5，重測那一項。Codex 額度已經用完：把要修的那一項記下來，額度恢復後再用同一段提示詞請 Codex 修。' },
-            { type: 'text', body: '問題若在插槽以外（基本版本身），記下來交給講師就好。沒有高風險問題？改修一項「中」風險的。看審查結果時對照規格書：規格書寫「這次不做」的（例如登入），不算這次的缺陷。' },
+            { type: 'text', body: '問題若在三個函式以外（基本版本身），記下來交給講師就好。沒有高風險問題？改修一項「中」風險的。看審查結果時對照規格書：規格書寫「這次不做」的（例如登入），不算這次的缺陷。' },
             { type: 'materials', names: ['CodeReview提示詞.md'] }
           ]
         },
@@ -961,11 +896,11 @@ F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息�
     { id: 'm-plan-tpl', file: '開發執行計畫範本.md', name: '開發執行計畫範本.md', type: 'MD', section: 'u2-s5', desc: '三步開發計畫範本，每步都要寫驗收方式' },
     { id: 'm-spec-ans', file: '參考答案_spec.md', name: '參考答案_spec.md', type: 'MD', section: 'u2-s5', downloadAs: 'spec.md', desc: '救援用：填好的規格書，下載後就是 spec.md，放進 docs' },
     { id: 'm-plan-ans', file: '參考答案_plan.md', name: '參考答案_plan.md', type: 'MD', section: 'u2-s5', downloadAs: 'plan.md', desc: '救援用：填好的開發執行計畫，下載後就是 plan.md，放進 docs' },
-    { id: 'm-signin-base', file: 'signin_基本版.html', name: 'signin_基本版.html', type: 'HTML', saveAs: 'signin.html', section: 'u3-s3', desc: '報名簽到表基本版：開課、報名已完成，簽到、出席率、匯出 CSV 三個功能插槽留空' },
-    { id: 'm-signin-done', file: 'signin_完成版.html', name: 'signin_完成版.html', type: 'HTML', saveAs: 'signin.html', section: 'u3-s3', desc: '救援用：三個功能插槽都完成的版本' },
+    { id: 'm-signin-base', file: 'signin_基本版.html', name: 'signin_基本版.html', type: 'HTML', saveAs: 'signin.html', section: 'u3-s3', desc: '報名簽到表基本版：開課、報名已完成，簽到、出席率、匯出 CSV 三個函式留空，由 Codex 補上' },
+    { id: 'm-signin-done', file: 'signin_完成版.html', name: 'signin_完成版.html', type: 'HTML', saveAs: 'signin.html', section: 'u3-s3', desc: '救援用：三個功能都完成的版本；Codex 額度用完時下載（檔名就是 signin.html）接著做驗收' },
     { id: 'm-agents', file: 'AGENTS.template.md', name: 'AGENTS.md', type: 'MD', section: 'u3-s2', downloadAs: 'AGENTS.md', desc: '專案規矩檔，放進 AI實作 資料夾，Codex 開工前會先讀' },
     { id: 'm-accept', file: '成品驗收清單.md', name: '成品驗收清單.md', type: 'MD', section: 'u3-s5', desc: '12 項功能測試＋2 項安全測試' },
-    { id: 'm-review', file: 'CodeReview提示詞.md', name: 'CodeReview提示詞.md', type: 'MD', section: 'u3-s5', desc: 'Code Review 提示詞（Codex 版與聊天版，只讀不改）、兩條路線的修正提示詞與五項白話說明' },
+    { id: 'm-review', file: 'CodeReview提示詞.md', name: 'CodeReview提示詞.md', type: 'MD', section: 'u3-s5', desc: 'Code Review 提示詞（Codex 版、聊天版備案，只讀不改）、Codex 修正提示詞與五項白話說明' },
     { id: 'm-prompts', file: '提示詞卡.md', name: '提示詞卡.md', type: 'MD', section: null, desc: '全天所有提示詞彙整，可離線複製' }
   ],
 
@@ -1130,20 +1065,20 @@ F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息�
       overflowNote: '最前面的規矩已經被擠出去，AI 讀不到了，它會照自己的習慣做。'
     },
     {
-      id: 'demo-slots', kind: 'slot-puzzle', title: '三個插槽，一個一個補成完成版', autoMs: 2800,
-      hint: '基本版已經能開課、報名；每補一個插槽，右邊預覽就多一個功能可以用。三張功能卡各補一個。',
+      id: 'demo-slots', kind: 'slot-puzzle', title: '三個預留位置，Codex 一個一個補上', autoMs: 2800,
+      hint: '基本版已經能開課、報名；Codex 依序補上三個預留的函式，每補一個，右邊畫面就多一個功能可以用。',
       doneLabel: 'signin.html 完成版：開課、報名、簽到、出席率、匯出 CSV 全部可用',
       base: ['新增課程', '報名（含額滿、重複報名檢查）'],
       slots: [
-        { n: 1, label: '簽到', fn: 'checkIn(enrollmentId)', promptId: 'p-slot-1', lines: ['找出這筆報名', '已經簽到過就擋下來（R4）', '否則記下簽到時間並存檔'] },
-        { n: 2, label: '出席率', fn: 'attendanceText(courseId)', promptId: 'p-slot-2', lines: ['數出報名人數與已簽到人數', '出席率 = 已簽到 ÷ 報名（R5）', '沒人報名時回傳「—」'] },
-        { n: 3, label: '匯出 CSV', fn: 'exportCsv(courseId)', promptId: 'p-slot-3', lines: ['第一列是表頭，每位報名者一列', '開頭加 UTF-8 BOM（R6）', '欄位有逗號時用雙引號包起來'] }
+        { n: 1, label: '簽到', fn: 'checkIn(enrollmentId)', lines: ['找出這筆報名', '已經簽到過就擋下來（R4）', '否則記下簽到時間並存檔'] },
+        { n: 2, label: '出席率', fn: 'attendanceText(courseId)', lines: ['數出報名人數與已簽到人數', '出席率 = 已簽到 ÷ 報名（R5）', '沒人報名時回傳「—」'] },
+        { n: 3, label: '匯出 CSV', fn: 'exportCsv(courseId)', lines: ['第一列是表頭，每位報名者一列', '開頭加 UTF-8 BOM（R6）', '欄位有逗號時用雙引號包起來'] }
       ],
       captions: [
-        '**基本版**：開課、報名已經完成，但簽到、出席率、匯出 CSV 三個位置是空的。',
-        '**功能卡 1**：AI 只寫 checkIn 這一個函式，貼進插槽 1，簽到就能用了。',
-        '**功能卡 2**：再補 attendanceText，課程清單開始顯示出席率。',
-        '**功能卡 3**：最後補 exportCsv。三個插槽都補齊，基本版就變成完成版。'
+        '**基本版**：開課、報名已經完成，但簽到、出席率、匯出 CSV 三個預留位置是空的。',
+        '**補上 checkIn**：Codex 先寫簽到，放進第 1 個預留位置，簽到就能用了。',
+        '**補上 attendanceText**：課程清單開始顯示出席率。',
+        '**補上 exportCsv**：三個都補齊，基本版就變成完成版——一次提示詞，Codex 約 2 分鐘做完。'
       ]
     },
     {
@@ -1223,6 +1158,6 @@ F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息�
       explain: '這就是 SQL 注入：輸入被當成指令執行。SQL 一律用參數，輸入就只會被當成資料。' },
     { id: 'q12', section: 'u1-s4', q: '為什麼今天大部分工作用一般聊天，Codex 留到下午產程式時才用？',
       options: ['Codex 比較笨', '一般聊天免費不限次數，Codex 有額度，要留給需要讀寫整個檔案的工作', '只有一般聊天能寫程式', 'Codex 不能用中文'], answer: 1,
-      explain: '兩種都能寫程式。差別在成本：一般聊天不限次數，Codex 每次開工都會用掉額度，所以留給下午產程式、Code Review 這種要讀寫整個檔案的工作；沒有額度的人走聊天路線，一樣做得完。' }
+      explain: '兩種都能寫程式。差別在成本：一般聊天不限次數，Codex 每次開工都會用掉額度，所以留給下午產程式、Code Review 這種要讀寫整個檔案的工作；額度用完的人用講師的完成版接著做驗收，一樣做得完。' }
   ]
 };

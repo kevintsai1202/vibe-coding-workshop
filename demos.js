@@ -627,15 +627,15 @@
   }
 
   /* ============================================================
-   * 7. slot-puzzle：三個功能插槽拼成完成版
+   * 7. slot-puzzle：Codex 把三個預留位置一個一個補成完成版
    * ============================================================ */
 
-  /** 建立 signin.html 的三個插槽（左）與預覽畫面的三個功能按鈕（右） */
+  /** 建立 signin.html 的三個預留位置（左）與預覽畫面的三個功能按鈕（右） */
   function buildSlotPuzzle(cfg, h) {
     const { el } = h;
     const slotEls = cfg.slots.map(s => el('div', { class: 'sp-slot', 'data-n': String(s.n) },
       el('div', { class: 'sp-slot-head' },
-        el('span', { class: 'sp-slot-no' }, `插槽 ${s.n}`),
+        el('span', { class: 'sp-slot-no' }, `預留位置 ${s.n}`),
         el('span', { class: 'sp-slot-label' }, s.label),
         el('code', {}, s.fn)),
       el('div', { class: 'sp-empty' }, '空的：AI 還沒寫這個函式'),
