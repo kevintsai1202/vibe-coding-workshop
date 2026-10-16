@@ -43,7 +43,7 @@ window.COURSE = {
     ],
     // 今天帶走的三樣成果
     deliverables: [
-      ['上午', '休息倒數計時器 `timer.html`', '暖身：從基本版請 AI 加功能，貼上工具存成檔案'],
+      ['上午', '休息倒數計時器 `timer.html`', '暖身：從基本版請 AI 加功能，在聊天裡先試再存檔'],
       ['下午前段', '規格書 `spec.md`、開發執行計畫 `plan.md`', '把需求寫清楚，給 AI 照著做，也能交給資訊室看'],
       ['下午後段', '教育訓練報名簽到表 `signin.html`', '從基本版補上簽到、出席率、匯出 CSV 三個功能']
     ]
@@ -159,8 +159,8 @@ window.COURSE = {
     ├── signin.html        ← 單元三：Codex 路線由 Codex 直接改；聊天路線用貼上工具組合後下載
     ├── AGENTS.md          ← 單元三：網站下載（Codex 開工前會讀）
     └── docs/
-        ├── spec.md         ← 實作演練 1：貼上工具下載
-        └── plan.md         ← 實作演練 1：貼上工具下載`
+        ├── spec.md         ← 實作演練 1：聊天匯出 Markdown 後改名
+        └── plan.md         ← 實作演練 1：聊天匯出 Markdown 後改名`
   },
 
   /* ============================================================
@@ -172,6 +172,9 @@ window.COURSE = {
     ['畫面上有「對話」「工作」和 Codex，不知道開哪個', '今天的「一般聊天」是上方切換鈕的「對話」；「工作」今天用不到；Codex 在左上角「ChatGPT ⌄」選單裡，只在下午用。按鈕名稱與位置以講師現場畫面為準'],
     ['找不到 Codex', '按左上角的「ChatGPT ⌄」，選單裡選 Codex；上午用不到，下午 Codex 路線與 Code Review 時講師會帶'],
     ['下載的檔案在哪裡', '瀏覽器預設存在「下載」資料夾，請移到桌面的 `AI實作` 資料夾'],
+    ['匯出的檔案叫 writing-block.md', '這是 ChatGPT 匯出 Markdown 的固定檔名，在「下載」資料夾把它改名成 `spec.md` 或 `plan.md`，再移到 `AI實作/docs`'],
+    ['回覆沒有「寫作」區塊、找不到下載', '按回覆下方的「複製」圖示，貼到貼上工具，檔名改好再下載'],
+    ['回覆是程式碼框，看不到計時器', '按程式碼框右上角的 ▷ 就會變成可以操作的預覽；預覽關掉就沒了，確認能用後記得下載'],
     ['貼上工具出現「可能不完整」的警告', 'AI 省略了部分程式，回聊天請它「回傳完整的程式，不要省略任何部分」'],
     ['貼上工具讀不到範本', '貼上工具要從教學網站的網址打開，不能直接雙擊 `tool.html`'],
     ['Codex 說無法存取資料夾', '按「選擇專案」確認選的是 `AI實作`；跳出的確認視窗要允許'],
@@ -217,13 +220,14 @@ window.COURSE = {
         { name: 'app-codeblock.png', kind: 'screenshot', status: 'ready', alt: '聊天回覆裡的程式碼框與複製按鈕', spec: '有程式碼框的回覆：標出框右上角的複製鈕與整段回覆下方的複製圖示' },
         { name: 'app-switch.png', kind: 'screenshot', status: 'ready', alt: '左上角選單切換 ChatGPT 與 Codex', spec: '左上角「ChatGPT ⌄」下拉選單：ChatGPT 與 Codex 兩個選項' },
         { name: 'app-codex.png', kind: 'screenshot', status: 'ready', alt: 'Codex 畫面', spec: 'Codex 畫面：標出「選擇專案」與輸入框旁的存取權限' },
-        { name: 'app-codex-folder.png', kind: 'screenshot', status: 'ready', alt: 'Codex 選擇專案的清單', spec: '「選擇專案」彈出清單：標出「新專案」' }
+        { name: 'app-codex-folder.png', kind: 'screenshot', status: 'ready', alt: 'Codex 選擇專案的清單', spec: '「選擇專案」彈出清單：標出「新專案」' },
+        { name: 'app-preview.png', kind: 'screenshot', status: 'ready', alt: '聊天回覆裡直接跑的計時器', spec: '暖身：按 ▷ 後回覆渲染成可操作的計時器，標出「5 分鐘」按鈕' }
       ],
       tasks: [
         { id: 'd1-u1-t1', section: 'u1-s4', label: '登入 ChatGPT 桌面版，開一個一般聊天（不是 Codex，切換鈕也不是「工作」）' },
         { id: 'd1-u1-t2', section: 'u1-s4', label: '在桌面建立 `AI實作` 資料夾（下載的檔案都移到這裡）' },
-        { id: 'd1-u1-t3', section: 'u1-s4', label: '用貼上工具打開計時器基本版，在聊天請 AI 加「5 分鐘」按鈕與時間到變綠色' },
-        { id: 'd1-u1-t4', section: 'u1-s4', label: '把 AI 改好的程式貼回貼上工具預覽，下載成 `timer.html` 並打開' }
+        { id: 'd1-u1-t3', section: 'u1-s4', label: '貼上計時器基本版，在聊天請 AI 加「5 分鐘」按鈕與時間到變綠色，按 ▷ 在聊天裡先試' },
+        { id: 'd1-u1-t4', section: 'u1-s4', label: '確認能用後，把程式複製到貼上工具下載成 `timer.html` 並打開' }
       ],
       sections: [
         {
@@ -232,7 +236,7 @@ window.COURSE = {
             { type: 'text', body: '今天只做一件事：**把一個真實的行政痛點，變成一個自己做出來、能用的小系統**。不需要寫過程式，全程用中文跟 AI 對話。' },
             { type: 'heading', text: '今天會帶走三樣東西' },
             { type: 'table', head: ['時間', '你會做出', '用途'], rows: [
-              ['上午', '休息倒數計時器 `timer.html`', '暖身：從基本版請 AI 加功能，貼上工具存成檔案'],
+              ['上午', '休息倒數計時器 `timer.html`', '暖身：從基本版請 AI 加功能，在聊天裡先試再存檔'],
               ['下午前段', '規格書 `spec.md`、開發執行計畫 `plan.md`', '把需求寫清楚，給 AI 照著做，也能交給資訊室看'],
               ['下午後段', '教育訓練報名簽到表 `signin.html`', '從基本版補上簽到、出席率、匯出 CSV 三個功能']
             ] },
@@ -343,9 +347,10 @@ window.COURSE = {
               '打開[貼上工具](tool.html?load=timer_基本版.html)，按「預覽」試試看基本版。',
               '在 ChatGPT 桌面版**開一個一般聊天**（不是 Codex，切換鈕也不是「工作」），貼上下面的提示詞。',
               '回到貼上工具按「複製程式碼」，貼在提示詞最後一行下面，送出。',
-              'AI 回覆後，按程式碼框右上角的「複製」→ 回到貼上工具按「清空」→ 貼上 → 預覽。',
-              '能用就按「下載」，把 `timer.html` 移到 `AI實作` 資料夾，雙擊打開。'
+              'AI 回覆後**在聊天裡先試**：回覆是程式碼框就按右上角的 ▷，計時器會直接出現在回覆裡（有時會自動出現）；按「5 分鐘」、「開始」看會不會倒數。',
+              '能用就按程式碼框右上角的「複製」→ 回到貼上工具按「清空」→ 貼上 →「下載」，把 `timer.html` 移到 `AI實作` 資料夾，雙擊打開。聊天裡的預覽關掉就沒了，所以一定要下載。'
             ] },
+            { type: 'image', name: 'app-preview.png', alt: 'ChatGPT 回覆裡直接顯示可操作的計時器，多了「5 分鐘」按鈕', caption: '按 ▷ 之後，計時器直接在回覆裡跑：先按「5 分鐘」再按「開始」，確認會倒數。講師實測免費方案可用' },
             { type: 'prompt', id: 'p-warmup-1', title: '幫計時器加兩個功能', note: '暖身：一般聊天，後面接著貼上基本版程式', text:
 `我是完全不會寫程式的行政人員。下面是一個網頁檔 timer.html 的完整程式，是下課休息倒數計時器。
 請幫我加兩個功能：
@@ -389,13 +394,16 @@ window.COURSE = {
       illustrations: [
         { name: 'u2-hero.webp', kind: 'hero', status: 'ready', alt: '凌亂紙本簽到單變成整齊規格書', spec: '一疊凌亂的紙本簽到單，旁邊變成一份整齊的規格書與兩張資料表（AI 生圖）' },
         { name: 'u2-tables.webp', kind: 'diagram', status: 'ready', alt: '大 Excel 拆成兩張資料表', spec: '左邊一張重複很多的大 Excel，右邊拆成 courses 與 enrollments 兩張表，中間用 course_id 連線（手繪 SVG）' },
-        { name: 'u2-restaurant.webp', kind: 'diagram', status: 'ready', alt: '餐廳比喻前端後端資料庫 API', spec: '櫃檯＝前端、點餐單＝API、廚房＝後端、倉庫＝資料庫（手繪 SVG）' }
+        { name: 'u2-restaurant.webp', kind: 'diagram', status: 'ready', alt: '餐廳比喻前端後端資料庫 API', spec: '櫃檯＝前端、點餐單＝API、廚房＝後端、倉庫＝資料庫（手繪 SVG）' },
+        // App 介面截圖（實作演練 1 匯出規格書；不計入插圖上限）
+        { name: 'app-writing.png', kind: 'screenshot', status: 'ready', alt: '回覆放在「寫作」區塊', spec: '規格書回覆的「寫作」區塊：標出右上角的「展開」' },
+        { name: 'app-export.png', kind: 'screenshot', status: 'ready', alt: '文件的下載選單', spec: '展開後的文件：標出右上角「下載」與 Markdown／PDF／Word 選單' }
       ],
       tasks: [
         { id: 'd1-u2-t1', section: 'u2-s5', label: '在 ChatGPT 開新的一般聊天，貼上提示詞與《需求訪談紀錄》全文' },
         { id: 'd1-u2-t2', section: 'u2-s5', label: 'AI 提問後，用《訪談補充回答》回覆' },
-        { id: 'd1-u2-t3', section: 'u2-s5', label: '請 AI 依範本寫規格書，用貼上工具存成 `AI實作/docs/spec.md`' },
-        { id: 'd1-u2-t4', section: 'u2-s5', label: '請 AI 寫開發執行計畫，存成 `AI實作/docs/plan.md`' },
+        { id: 'd1-u2-t3', section: 'u2-s5', label: '請 AI 依範本寫規格書，從聊天匯出 Markdown，改名成 `spec.md` 放進 `AI實作/docs`' },
+        { id: 'd1-u2-t4', section: 'u2-s5', label: '請 AI 寫開發執行計畫，匯出後改名成 `plan.md` 放進 `AI實作/docs`' },
         { id: 'd1-u2-t5', section: 'u2-s5', label: '用自我檢核清單檢查規格書，缺的地方請 AI 補' }
       ],
       sections: [
@@ -563,7 +571,7 @@ function attendanceText(courseId) {
         {
           id: 'u2-s5', title: '【實作演練 1】完成系統規格書與開發執行計畫', time: '13:15–14:05', minutes: 50, kind: 'lab',
           blocks: [
-            { type: 'text', body: '**目標**：把《需求訪談紀錄》變成 `docs/spec.md` 與 `docs/plan.md`，下午的實作演練 2 就照這兩份做。全程在 ChatGPT **一般聊天**完成，寫好的文件用貼上工具存成檔案。' },
+            { type: 'text', body: '**目標**：把《需求訪談紀錄》變成 `docs/spec.md` 與 `docs/plan.md`，下午的實作演練 2 就照這兩份做。全程在 ChatGPT **一般聊天**完成，寫好的文件直接從聊天匯出成 Markdown 檔（免費方案可用）。' },
             { type: 'heading', text: '步驟 0：準備（5 分）' },
             { type: 'list', ordered: true, items: [
               '在 `AI實作` 資料夾裡新增 `docs` 資料夾。',
@@ -590,7 +598,10 @@ function attendanceText(courseId) {
 寫完列出你不確定、需要我決定的地方。
 
 （在這一行下面貼上《規格書範本》的全文）` },
-            { type: 'note', body: '**存檔**：按 AI 回覆下方的「複製」圖示 → 打開[貼上工具](tool.html) → 檔名改成 `spec.md` → 貼上 → 下載 → 移到 `AI實作/docs`。' },
+            { type: 'note', body: '**存檔**：AI 的回覆會放在「寫作」區塊裡 → 按區塊右上角的「展開」→ 右上角的「下載」→ 選 **Markdown 文件** → 檔案存到「下載」資料夾，檔名固定是 `writing-block.md` → 改名成 `spec.md`，移到 `AI實作/docs`。' },
+            { type: 'image', name: 'app-writing.png', alt: 'AI 回覆放在「寫作」區塊，右上角有複製與展開按鈕', caption: '規格書出現在「寫作」區塊：按右上角的「展開」' },
+            { type: 'image', name: 'app-export.png', alt: '展開後的文件右上角有下載選單：Markdown 文件、PDF 文件、Microsoft Word', caption: '展開後按右上角「下載」→「Markdown 文件」，存到「下載」資料夾的 writing-block.md；要交給主管看可以選 Word' },
+            { type: 'note', tone: 'warn', body: '回覆沒有出現「寫作」區塊、只是一般文字？按回覆下方的「複製」圖示 → 打開[貼上工具](tool.html) → 檔名改成 `spec.md` → 貼上 → 下載。' },
             { type: 'heading', text: '步驟 3：寫出開發執行計畫（10 分）' },
             { type: 'prompt', id: 'p-spec-3', title: '拆成三步的計畫', note: '實作演練 1 第 3 則：後面接著貼上《開發執行計畫範本》全文', text:
 `請依照下面的開發執行計畫範本，根據剛才的 spec.md 寫出 plan.md，拆成三步：
@@ -600,7 +611,7 @@ function attendanceText(courseId) {
 每一步寫清楚要做哪些功能、完成後我要怎麼驗收（我會照著點畫面測試）。先不要寫程式。
 
 （在這一行下面貼上《開發執行計畫範本》的全文）` },
-            { type: 'text', body: '一樣用貼上工具存成 `plan.md`，放進 `AI實作/docs`。' },
+            { type: 'text', body: '一樣從「寫作」區塊匯出 Markdown，把 `writing-block.md` 改名成 `plan.md`，放進 `AI實作/docs`。' },
             { type: 'heading', text: '步驟 4：自我檢核（10 分）' },
             { type: 'text', body: '打開 `spec.md` 與 `plan.md`，逐項檢查：' },
             { type: 'list', check: true, items: [
