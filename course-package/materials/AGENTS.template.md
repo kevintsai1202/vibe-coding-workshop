@@ -9,7 +9,8 @@
 - 成品只有一個檔案 `signin.html`，CSS 與 JavaScript 都寫在裡面；不用框架、不用伺服器、不用安裝任何套件
 - 以講師的基本版為起點；簽到、出席率、匯出 CSV 寫在 `// ===== 功能插槽 N …（開始）=====` 與 `（結束）` 標記之間
 - 資料表欄位與共用函式（`query`、`run`、`save`、`render`、`showMsg`、`nowText`、`downloadFile`、`esc`）以 `signin.html` 現有的為準；規格書寫法不同時照 `signin.html`，並在回報裡指出差異
-- 資料庫用 sql.js 1.13.0（SQLite），從 cdnjs 載入；每次資料變更後存到 localStorage
+- 資料庫用 sql.js 1.13.0（SQLite），從 cdnjs 載入；資料存在同一個資料夾的 `signin.db`，每次資料變更後呼叫 `save()` 就會寫回這個檔
+- 不要修改或刪除 `signin.db`；不要改 `save()` 與「連接資料夾」相關的程式
 - 匯出 CSV 時開頭加 UTF-8 BOM（`\uFEFF`）
 
 ## 寫程式的規矩

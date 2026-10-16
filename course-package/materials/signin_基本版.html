@@ -37,17 +37,24 @@
   .msg.ok { background: #dcfce7; color: #166534; }
   .msg.error { background: #fee2e2; color: #991b1b; }
   .note { background: #fef3c7; color: #92400e; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; }
+  .folder-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .folder-bar.connected { background: #e0f2fe; color: #075985; }
   footer { text-align: center; }
 </style>
 </head>
 <body>
   <header>
     <h1>晴川醫院 教育訓練報名簽到表</h1>
-    <p>課堂練習用｜醫院與人名皆為虛構｜資料存在這台電腦的瀏覽器</p>
+    <p>課堂練習用｜醫院與人名皆為虛構｜資料存在資料夾裡的資料庫檔 signin.db</p>
   </header>
   <main>
     <div id="msg" class="msg" role="status" hidden></div>
-    <p id="storageNote" class="note" hidden>預覽模式不會保存資料。下載成 signin.html 後用瀏覽器打開，資料才會保存。</p>
+    <!-- 資料庫檔的連接狀態：資料存在使用者選的資料夾裡的 signin.db（Chrome、Edge 才能直接寫進資料夾） -->
+    <div id="folderBar" class="note folder-bar">
+      <span id="folderStatus">正在檢查資料夾…</span>
+      <button id="btnFolder" class="primary" hidden>連接資料夾</button>
+      <button id="btnChangeFolder" class="link" hidden>換資料夾</button>
+    </div>
 
     <section class="card">
       <h2>新增課程</h2>
@@ -99,15 +106,18 @@
 <script>
 /*
  * 教育訓練報名簽到表 signin.html
- * 基本版已完成：資料表、示範資料、新增課程、報名（名額已滿、重複報名、必填檢查）、保存與重設
+ * 基本版已完成：資料表、示範資料、新增課程、報名（名額已滿、重複報名、必填檢查）、重設，
+ *   以及把資料庫存成資料夾裡的 signin.db（按「連接資料夾」選 AI實作；Chrome、Edge 才支援）
  * 功能插槽 1～3：簽到、出席率、匯出 CSV（第二步由 Codex 依 docs/plan.md 補上；標記是給 Codex 定位用的）
  */
 
 /* ===== 設定 ===== */
 // sql.js（瀏覽器版 SQLite）的載入位置
 const SQL_JS_BASE = 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.13.0/';
-// 資料庫存在瀏覽器裡的名稱
-const STORAGE_KEY = 'qingchuan-signin-db-v1';
+// 資料庫檔的檔名（存在使用者選的資料夾裡，例如 AI實作/signin.db）
+const DB_FILE = 'signin.db';
+// 記住「上次連接的資料夾」用的瀏覽器內建資料庫（IndexedDB）名稱；資料本身不存在這裡
+const FOLDER_MEMORY = 'qingchuan-signin-folder';
 // 單位清單（下拉選單）
 const DEPTS = ['護理部', '醫務部', '藥劑部', '檢驗科', '放射科', '總務室', '人資室', '資訊室', '教學研究部', '社工室'];
 
@@ -115,7 +125,10 @@ const DEPTS = ['護理部', '醫務部', '藥劑部', '檢驗科', '放射科', 
 let SQL = null;               // sql.js 函式庫
 let db = null;                // 資料庫
 let currentCourseId = null;   // 目前在看哪一堂課的名單
-let canSave = true;           // 這個環境能不能把資料存進瀏覽器
+let folder = null;            // 已連接的資料夾；有值才會把資料寫進 signin.db
+let savedFolder = null;       // 上次連接過、這次要再按一次「重新連接」才能用的資料夾
+let unsavedChanges = false;   // 存檔失敗後還沒寫進 signin.db 的變更（重新連接時要寫回去，不能被檔案蓋掉）
+let writeQueue = Promise.resolve();   // 寫檔排隊：一次寫完再寫下一次，順序不會亂
 
 /* ===== 共用工具（功能插槽可以直接使用） ===== */
 
@@ -134,18 +147,24 @@ function run(sql, params = []) {
   db.run(sql, params);
 }
 
-// 把整個資料庫存到瀏覽器（localStorage）
+// 把整個資料庫寫回資料夾裡的 signin.db（還沒連接資料夾就不存）
 function save() {
-  if (!canSave) return;
-  try {
-    const bytes = db.export();
-    let bin = '';
-    for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-    localStorage.setItem(STORAGE_KEY, btoa(bin));
-  } catch (e) {
-    canSave = false;
-    document.getElementById('storageNote').hidden = false;
-  }
+  if (!folder) return;
+  const bytes = db.export();   // 先拍下現在的資料，再排隊寫進檔案
+  const target = folder;
+  writeQueue = writeQueue.then(() => writeDbFile(target, bytes)).catch(e => {
+    // 寫不進去（例如權限被收回）：改成要重新連接，之後的變更等重新連接時一起寫回
+    const gone = e.name === 'NotFoundError';   // 資料夾被移走、改名或刪掉
+    if (folder === target) {
+      folder = null;
+      savedFolder = gone ? null : target;
+      unsavedChanges = true;
+      showFolderState(gone ? 'none' : 'reconnect');
+    }
+    showMsg(gone
+      ? `找不到資料夾 ${target.name}（被移走、改名或刪掉了？），資料沒有存到。請按「連接資料夾」重新選，畫面上的資料會寫進新的 ${DB_FILE}。`
+      : `存檔失敗：${e.message}。請按「重新連接資料夾」，畫面上的資料會再寫回 ${DB_FILE}。`, 'error');
+  });
 }
 
 // 顯示訊息：type 為 'ok'（綠色）或 'error'（紅色）
@@ -183,29 +202,217 @@ function downloadFile(filename, content, mimeType) {
 
 /* ===== 資料庫 ===== */
 
-// 檢查瀏覽器能不能存資料（預覽模式或私密視窗可能不行）
-function storageAvailable() {
+/* ===== 資料庫檔 signin.db（存在使用者選的資料夾裡） ===== */
+
+// 這個瀏覽器能不能直接讀寫資料夾（Chrome、Edge 可以；Safari、Firefox 與預覽視窗不行）
+function folderSupported() {
   try {
-    localStorage.setItem('__test__', '1');
-    localStorage.removeItem('__test__');
-    return true;
+    return window.isSecureContext === true && typeof window.showDirectoryPicker === 'function' && window.self === window.top;
   } catch (e) {
     return false;
   }
 }
 
-// 從瀏覽器讀回上次存的資料庫；沒有就回傳 null
-function loadSaved() {
+// 是不是被嵌在別的網頁裡（例如教學網站貼上工具的預覽）
+function inPreview() {
   try {
-    const b64 = localStorage.getItem(STORAGE_KEY);
-    if (!b64) return null;
-    const bin = atob(b64);
-    const bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    return bytes;
+    return window.self !== window.top;
+  } catch (e) {
+    return true;
+  }
+}
+
+// 讀資料夾裡的 signin.db；沒有這個檔或是空檔就回傳 null
+async function readDbFile(dir) {
+  try {
+    const file = await (await dir.getFileHandle(DB_FILE)).getFile();
+    if (!file.size) return null;
+    return new Uint8Array(await file.arrayBuffer());
+  } catch (e) {
+    if (e.name === 'NotFoundError') return null;
+    throw e;
+  }
+}
+
+// 把資料庫內容整個寫進資料夾裡的 signin.db（沒有就建立）
+async function writeDbFile(dir, bytes) {
+  const fileHandle = await dir.getFileHandle(DB_FILE, { create: true });
+  const writable = await fileHandle.createWritable();
+  await writable.write(bytes);
+  await writable.close();
+}
+
+// 檢查是不是 SQLite 資料庫檔：檔案開頭固定是「SQLite format 3」
+function isSqliteFile(bytes) {
+  const head = 'SQLite format 3';
+  if (bytes.length < 100) return false;
+  for (let i = 0; i < head.length; i++) {
+    if (bytes[i] !== head.charCodeAt(i)) return false;
+  }
+  return true;
+}
+
+// 打開「記住資料夾」用的瀏覽器資料庫（IndexedDB）
+function openFolderMemory() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(FOLDER_MEMORY, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('folders');
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+// 記住這次連接的資料夾，下次打開網頁就能接回去（記不住也沒關係，下次再選一次）
+async function rememberFolder(dir) {
+  try {
+    const mem = await openFolderMemory();
+    await new Promise((resolve, reject) => {
+      const tx = mem.transaction('folders', 'readwrite');
+      tx.objectStore('folders').put(dir, 'last');
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+    mem.close();
+  } catch (e) {
+    /* 這個環境不能記住資料夾：不影響存檔 */
+  }
+}
+
+// 取出上次連接的資料夾；沒有就回傳 null
+async function recallFolder() {
+  try {
+    const mem = await openFolderMemory();
+    const dir = await new Promise((resolve, reject) => {
+      const req = mem.transaction('folders').objectStore('folders').get('last');
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+    mem.close();
+    return dir;
   } catch (e) {
     return null;
   }
+}
+
+// 更新上方的資料夾狀態列：unsupported（不支援）、none（尚未連接）、reconnect（要重新連接）、connected（已連接）
+function showFolderState(state) {
+  const bar = document.getElementById('folderBar');
+  const status = document.getElementById('folderStatus');
+  const btn = document.getElementById('btnFolder');
+  bar.classList.toggle('connected', state === 'connected');
+  btn.hidden = state === 'unsupported' || state === 'connected';
+  document.getElementById('btnChangeFolder').hidden = state !== 'connected';
+  if (state === 'unsupported') {
+    status.textContent = inPreview()
+      ? '預覽模式：這裡只能看示範資料，不會保存。下載成 signin.html 後用 Chrome 或 Edge 打開，再按「連接資料夾」。'
+      : '這個瀏覽器不能把資料存進資料夾：請改用 Chrome 或 Edge 打開 signin.html。現在顯示的是示範資料，不會保存。';
+  } else if (state === 'none') {
+    status.textContent = '尚未連接資料夾：現在顯示的是示範資料，不會保存。按右邊的按鈕選 AI實作 資料夾，資料庫會存成裡面的 signin.db。';
+    btn.textContent = '連接資料夾';
+  } else if (state === 'reconnect') {
+    status.textContent = `上次用的資料夾：${savedFolder.name}。瀏覽器要你再允許一次，才能讀寫裡面的 ${DB_FILE}。`;
+    btn.textContent = '重新連接資料夾';
+  } else {
+    status.textContent = `已連接資料庫檔：${folder.name}／${DB_FILE}（每次變更自動存檔）`;
+  }
+}
+
+// 開始使用這個資料夾：裡面有 signin.db 就讀它（以檔案為準），沒有就把畫面上的資料寫進去
+async function useFolder(dir) {
+  const bytes = unsavedChanges ? null : await readDbFile(dir);
+  let loaded = null;
+  if (bytes) {
+    try {
+      if (!isSqliteFile(bytes)) throw new Error('不是 SQLite 資料庫檔');
+      loaded = new SQL.Database(bytes);
+      loaded.exec('SELECT COUNT(*) FROM sqlite_master');
+    } catch (e) {
+      if (loaded) loaded.close();
+      showMsg(`${dir.name} 裡的 ${DB_FILE} 不是可用的資料庫檔，沒有連接，也沒有覆蓋它。請把它改名或移走後再連接。`, 'error');
+      return false;
+    }
+  }
+  folder = dir;
+  savedFolder = null;
+  if (loaded) {
+    db.close();
+    db = loaded;
+    createTables();
+    currentCourseId = null;
+  }
+  await rememberFolder(dir);
+  showFolderState('connected');
+  render();
+  if (loaded) {
+    const courses = query('SELECT COUNT(*) AS n FROM courses')[0].n;
+    const people = query('SELECT COUNT(*) AS n FROM enrollments')[0].n;
+    showMsg(`已讀取 ${DB_FILE}：${courses} 堂課、${people} 筆報名`);
+  } else {
+    save();
+    showMsg(unsavedChanges ? `已重新連接，畫面上的資料已寫回 ${DB_FILE}` : `已在 ${dir.name} 建立 ${DB_FILE}，之後每次變更都會自動存檔`);
+    unsavedChanges = false;
+  }
+  return true;
+}
+
+// 按「連接資料夾」或「重新連接資料夾」
+async function connectFolder() {
+  try {
+    let dir = savedFolder;
+    if (dir) {
+      // 上次用過的資料夾：只要再允許一次，不用重新選
+      if (await dir.requestPermission({ mode: 'readwrite' }) !== 'granted') {
+        savedFolder = null;
+        showFolderState('none');
+        showMsg('沒有允許編輯資料夾，資料不會保存。可以再按「連接資料夾」重新選。', 'error');
+        return;
+      }
+    } else {
+      dir = await window.showDirectoryPicker({ id: 'signin', mode: 'readwrite', startIn: 'desktop' });
+    }
+    await useFolder(dir);
+  } catch (e) {
+    if (e.name === 'AbortError') return;   // 選資料夾時按了取消
+    showMsg('無法連接資料夾：' + e.message, 'error');
+  }
+}
+
+// 按「換資料夾」：選錯資料夾時改選另一個（新資料夾有 signin.db 就讀它，沒有就把目前的資料寫進去）
+async function changeFolder() {
+  try {
+    const dir = await window.showDirectoryPicker({ id: 'signin', mode: 'readwrite', startIn: 'desktop' });
+    const old = folder;
+    folder = null;
+    if (!(await useFolder(dir))) {
+      folder = old;
+      showFolderState('connected');
+    }
+  } catch (e) {
+    if (e.name === 'AbortError') return;   // 選資料夾時按了取消，維持原本的資料夾
+    showMsg('無法換資料夾：' + e.message, 'error');
+  }
+}
+
+// 打開網頁時接回上次的資料夾：權限還在就直接讀 signin.db；不在就請使用者按「重新連接」（瀏覽器規定要按按鈕才能要權限）
+async function restoreFolder() {
+  if (!folderSupported()) {
+    showFolderState('unsupported');
+    return;
+  }
+  const dir = await recallFolder();
+  if (!dir) {
+    showFolderState('none');
+    return;
+  }
+  let permission = 'prompt';
+  try {
+    permission = await dir.queryPermission({ mode: 'readwrite' });
+  } catch (e) {
+    /* 問不到權限就當成要重新允許 */
+  }
+  if (permission === 'granted' && await useFolder(dir).catch(() => false)) return;
+  savedFolder = dir;
+  showFolderState('reconnect');
 }
 
 // 建立兩張資料表：courses（課程）、enrollments（報名）
@@ -384,6 +591,8 @@ function bindEvents() {
   document.getElementById('btnEnroll').addEventListener('click', enroll);
   document.getElementById('btnExport').addEventListener('click', () => exportCsv(currentCourseId));
   document.getElementById('btnReset').addEventListener('click', resetDemo);
+  document.getElementById('btnFolder').addEventListener('click', connectFolder);
+  document.getElementById('btnChangeFolder').addEventListener('click', changeFolder);
   document.addEventListener('click', e => {
     const view = e.target.closest('[data-view]');
     if (view) {
@@ -398,7 +607,8 @@ function bindEvents() {
 
 // 重設為示範資料（會清掉目前所有資料）
 function resetDemo() {
-  if (!confirm('要清掉目前所有資料，重設為示範資料嗎？')) return;
+  if (!confirm('要清掉目前所有資料，重設為示範資料嗎？（已連接資料夾時，signin.db 也會一起被覆蓋）')) return;
+  db.close();
   db = new SQL.Database();
   createTables();
   seedDemo();
@@ -408,7 +618,7 @@ function resetDemo() {
   showMsg('已重設為示範資料');
 }
 
-// 啟動：載入 sql.js、讀回上次的資料（沒有就放示範資料）、畫出畫面
+// 啟動：載入 sql.js、先放示範資料畫出畫面，再接回上次連接的資料夾（有的話改讀 signin.db）
 async function init() {
   if (typeof initSqlJs !== 'function') {
     showMsg('無法載入資料庫元件（sql.js），請確認有連上網路後重新整理。', 'error');
@@ -416,18 +626,13 @@ async function init() {
   }
   try {
     SQL = await initSqlJs({ locateFile: file => SQL_JS_BASE + file });
-    canSave = storageAvailable();
-    const saved = canSave ? loadSaved() : null;
-    db = saved ? new SQL.Database(saved) : new SQL.Database();
+    db = new SQL.Database();
     createTables();
-    if (!saved) {
-      seedDemo();
-      save();
-    }
+    seedDemo();
     document.getElementById('eDept').innerHTML = '<option value="">選擇單位</option>' + DEPTS.map(d => `<option>${esc(d)}</option>`).join('');
-    document.getElementById('storageNote').hidden = canSave;
     bindEvents();
     render();
+    await restoreFolder();
     document.body.dataset.ready = '1';
   } catch (e) {
     showMsg('資料庫啟動失敗：' + e.message, 'error');
