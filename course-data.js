@@ -150,7 +150,8 @@ window.COURSE = {
       ['安裝 ChatGPT 桌面版', '下載頁 <https://openai.com/chatgpt/download/>。登入與工作資料夾設定在課堂開始時由講師帶著完成'],
       ['ChatGPT 帳號', '一組可正常使用的帳號（免費方案即可），記得帳號密碼以便課堂登入；有付費方案（Plus 等）的人，下午可以走 Codex 路線'],
       ['先備知識', '會基本電腦操作與網頁瀏覽即可，不需要程式設計背景'],
-      ['瀏覽器', 'Chrome 或 Edge（macOS 也可用 Safari），用來打開自己做的網頁']
+      ['瀏覽器', 'Chrome 或 Edge（macOS 也可用 Safari），用來打開自己做的網頁'],
+      ['不用安裝的東西', 'Git、Node.js、Python 都不用裝：今天的成品是單一網頁檔，資料庫元件從網路載入。依 OpenAI 文件這些對 Codex 都是選用，少了 Git 只是 Codex 的「查看變更」可能不顯示']
     ],
     safety: '課堂只用講師提供的假資料。不要把真實員工、病人資料、帳號密碼、公司機密貼給 AI。',
     folderTree: `桌面/
@@ -177,7 +178,7 @@ window.COURSE = {
     ['回覆是程式碼框，看不到計時器', '按程式碼框右上角的 ▷ 就會變成可以操作的預覽；預覽關掉就沒了，確認能用後記得下載'],
     ['貼上工具出現「可能不完整」的警告', 'AI 省略了部分程式，回聊天請它「回傳完整的程式，不要省略任何部分」'],
     ['貼上工具讀不到範本', '貼上工具要從教學網站的網址打開，不能直接雙擊 `tool.html`'],
-    ['Codex 說無法存取資料夾', '按「選擇專案」確認選的是 `AI實作`；跳出的確認視窗要允許'],
+    ['Codex 說無法存取資料夾', '按「選擇專案」確認選的是 `AI實作`；跳出「要信任這個資料夾嗎」要按「信任資料夾」'],
     ['找不到 Codex 改好的檔案', 'Codex 直接改 `AI實作` 資料夾裡的 `signin.html`；檔案已經開著的話按 F5 重新整理，或直接問 Codex「改了哪個檔案？」'],
     ['雙擊 HTML 用了奇怪的程式打開', '在檔案上按右鍵 → 開啟檔案 → 選 Chrome 或 Edge'],
     ['改了程式，畫面沒變', '瀏覽器按 F5 重新整理'],
@@ -221,7 +222,8 @@ window.COURSE = {
         { name: 'app-switch.png', kind: 'screenshot', status: 'ready', alt: '左上角選單切換 ChatGPT 與 Codex', spec: '左上角「ChatGPT ⌄」下拉選單：ChatGPT 與 Codex 兩個選項' },
         { name: 'app-codex.png', kind: 'screenshot', status: 'ready', alt: 'Codex 畫面', spec: 'Codex 畫面：標出「選擇專案」與輸入框旁的存取權限' },
         { name: 'app-codex-folder.png', kind: 'screenshot', status: 'ready', alt: 'Codex 選擇專案的清單', spec: '「選擇專案」彈出清單：標出「新專案」' },
-        { name: 'app-preview.png', kind: 'screenshot', status: 'ready', alt: '聊天回覆裡直接跑的計時器', spec: '暖身：按 ▷ 後回覆渲染成可操作的計時器，標出「5 分鐘」按鈕' }
+        { name: 'app-preview.png', kind: 'screenshot', status: 'ready', alt: '聊天回覆裡直接跑的計時器', spec: '暖身：按 ▷ 後回覆渲染成可操作的計時器，標出「5 分鐘」按鈕' },
+        { name: 'app-usage.png', kind: 'screenshot', status: 'ready', alt: '頭像選單的剩餘用量', spec: '左下角頭像 → 剩餘用量：免費方案按月、顯示剩餘 % 與重置日（姓名打馬賽克）' }
       ],
       tasks: [
         { id: 'd1-u1-t1', section: 'u1-s4', label: '登入 ChatGPT 桌面版，開一個一般聊天（不是 Codex，切換鈕也不是「工作」）' },
@@ -313,7 +315,7 @@ window.COURSE = {
             { type: 'heading', text: '一般聊天與 Codex 怎麼分工' },
             { type: 'table', head: ['', '一般聊天', 'Codex'], rows: [
               ['AI 怎麼幫你', '在對話裡寫出內容或程式，你複製出來存成檔案', '直接讀寫你指定的資料夾'],
-              ['免費方案', '文字聊天不限次數（2026 年 8 月起）', '有額度，以 5 小時滾動計算；講師實測做一個計時器就用掉四成'],
+              ['免費方案', '文字聊天不限次數（2026 年 8 月起）', '有額度，免費方案按月計算：頭像選單的「剩餘用量」看得到剩幾 % 與重置日。講師實測：做一個計時器用掉約四成，一次只讀不改的 Code Review 約 1%'],
               ['今天用在', '暖身、除錯練習、規格書、開發計畫；下午聊天路線的三個功能', '下午 Codex 路線的三個功能、Code Review']
             ] },
             // 下午兩條路線：付費方案走 Codex、免費帳號走聊天（內容與 content.md u1-s4 同步）
@@ -323,6 +325,7 @@ window.COURSE = {
               ['免費方案', '**聊天路線**：一般聊天每次寫一個函式，貼上工具組合成 `signin.html`（想體驗 Codex 也可以試，額度用完就改回聊天）', '還有 Codex 額度就用 Codex，沒有就用聊天版']
             ] },
             { type: 'text', body: '兩條路線做出來的 `signin.html` 一樣，驗收清單也一樣。**免費方案可以完成全部實作**。' },
+            { type: 'image', name: 'app-usage.png', alt: '左下角頭像選單展開「剩餘用量」，顯示 1 個月、剩餘百分比與重置日期', caption: '額度看這裡：左下角頭像 →「剩餘用量」。免費方案按月計算，顯示剩幾 % 與哪天重置；下午走 Codex 路線前先看一眼' },
             { type: 'note', body: '**額度是真實的成本**：講師會示範一次 Codex，讓大家看它讀檔、建檔的過程，也看額度怎麼掉。所以今天把 Codex 留到下午產程式與 Code Review，其他都在聊天裡做。' },
             { type: 'quiz', id: 'q12' },
             { type: 'heading', text: '介面導覽（跟著講師一步一步做）' },
@@ -657,7 +660,13 @@ function attendanceText(courseId) {
       illustrations: [
         { name: 'u3-hero.webp', kind: 'hero', status: 'ready', alt: '行政人員在教室門口用筆電幫同仁簽到', spec: '教學研究部門口，行政人員拿著筆電幫同仁簽到，螢幕上是出席率（AI 生圖）' },
         { name: 'u3-prompt.webp', kind: 'diagram', status: 'ready', alt: '四段式指令拆解', spec: '四段式指令（目標、範圍、限制、驗收）拆解一段好提示詞（手繪 SVG）' },
-        { name: 'u3-result.png', kind: 'screenshot', status: 'planned', alt: '完成的報名簽到表畫面', spec: '完成的報名簽到表畫面（講師示範版截圖）' }
+        { name: 'u3-result.png', kind: 'screenshot', status: 'planned', alt: '完成的報名簽到表畫面', spec: '完成的報名簽到表畫面（講師示範版截圖）' },
+        // Codex 路線的 App 截圖（2026-10 免費帳號實測；不計入插圖上限）
+        { name: 'app-codex-newproject.png', kind: 'screenshot', status: 'ready', alt: '建立專案視窗', spec: 'Codex「新專案」的建立專案視窗：標出專案名稱與來源資料夾的「新增」' },
+        { name: 'app-codex-trust.png', kind: 'screenshot', status: 'ready', alt: '信任資料夾確認視窗', spec: '「要信任這個資料夾嗎」：標出「信任資料夾」' },
+        { name: 'app-codex-done.png', kind: 'screenshot', status: 'ready', alt: 'Codex 做完的畫面', spec: 'Codex 做完：畫面驗收步驟、已編輯 signin.html +45 −6、查看變更' },
+        { name: 'app-codex-diff.png', kind: 'screenshot', status: 'ready', alt: '查看變更的差異畫面', spec: '查看變更：右側面板逐行顯示紅（刪）綠（加）' },
+        { name: 'app-review-result.png', kind: 'screenshot', status: 'ready', alt: 'Code Review 回覆', spec: 'Codex 版 Code Review 的回覆：逐項列位置、問題、風險、建議' }
       ],
       tasks: [
         { id: 'd1-u3-t1', section: 'u3-s2', label: '把 `AGENTS.md` 放進 `AI實作` 資料夾（Codex 開工前會先讀它）' },
@@ -764,9 +773,11 @@ function attendanceText(courseId) {
             { type: 'list', ordered: true, items: [
               '在本節最下方的素材按 `signin_基本版.html` 的「下載」（下載的檔名就是 `signin.html`），移到 `AI實作` 資料夾。',
               '確認 `AI實作` 裡有 `signin.html`、`AGENTS.md`、`docs/spec.md`、`docs/plan.md`。',
-              '在 ChatGPT 桌面版左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」加入 `AI實作` 資料夾，開一個新對話，貼上下面的提示詞。',
+              '在 ChatGPT 桌面版左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」：專案名稱填 `AI實作`，來源資料夾按「新增」選桌面的 `AI實作`，按「建立專案」；跳出「要信任這個資料夾嗎」就按「信任資料夾」。然後貼上下面的提示詞。',
               'Codex 要改檔時會跳出確認，選允許。改完雙擊 `signin.html` 打開（已經開著就按 F5），照下面三張功能卡底下的「測試」逐項檢查。'
             ] },
+            { type: 'image', name: 'app-codex-newproject.png', alt: '建立專案視窗：上方填專案名稱，來源資料夾區有「新增」按鈕', caption: '「選擇專案」→「新專案」：填專案名稱，來源資料夾按「新增」選桌面的 AI實作，再按「建立專案」' },
+            { type: 'image', name: 'app-codex-trust.png', alt: '「要信任這個資料夾嗎」確認視窗，下方有「信任資料夾」按鈕', caption: '第一次加入資料夾會問「要信任這個資料夾嗎」：按「信任資料夾」，Codex 才能讀寫裡面的檔案' },
             { type: 'prompt', id: 'p-codex-build', title: 'Codex 路線：一次補上三個功能', note: 'Codex 路線：在 Codex 貼上，它會自己讀資料夾裡的檔案', text:
 `請先讀 AGENTS.md、docs/spec.md、docs/plan.md 和 signin.html。
 這次只做 plan.md 的第二步：把 signin.html 預留的三個功能插槽寫好——
@@ -777,6 +788,8 @@ function attendanceText(courseId) {
 資料表欄位和 query、run、save、render、showMsg、nowText、downloadFile 這些函式，以 signin.html 現有的為準。
 動手前先用三句話說你的理解，說完直接開始改，不用等我回覆。
 做完告訴我：改了哪三個函式、我要怎麼在畫面上逐項驗收。` },
+            { type: 'image', name: 'app-codex-done.png', alt: 'Codex 做完的回覆：列出畫面驗收步驟，下方顯示已編輯 signin.html +45 −6 與「查看變更」按鈕', caption: '做完的樣子：它會告訴你怎麼驗收，下方顯示改了哪個檔、加減幾行。講師實測（免費方案、6 Luna 中）：約 2 分鐘、+45 −6，三個插槽都填好' },
+            { type: 'image', name: 'app-codex-diff.png', alt: '按「查看變更」後右側面板逐行顯示差異：紅色是刪掉的、綠色是加上的', caption: '按「查看變更」可以逐行看它改了什麼：紅色刪、綠色加；不對可以按「復原」' },
             { type: 'text', body: '測試沒通過：在同一個 Codex 對話貼「錯誤回報四件套」（單元二「用 AI 找錯與修正程式碼」的提示詞），最後加一句「只改那個插槽的函式」；改完按 F5 再測同一項。' },
             { type: 'note', tone: 'warn', body: '**Codex 額度用完或做不出來？** 改走下面的聊天路線，從還沒做好的插槽開始。Codex 已經做好的函式不用重做：在瀏覽器打開 `signin.html` 按 `Ctrl + U`（Mac：`Cmd + Option + U`）看原始碼，把該插槽「開始」與「結束」標記之間的函式複製到貼上工具對應的插槽。' },
             { type: 'heading', text: '聊天路線（免費帳號）：三張功能卡' },
@@ -865,7 +878,7 @@ F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息�
             { type: 'heading', text: 'Codex 版' },
             { type: 'list', ordered: true, items: [
               '確認 `AI實作` 資料夾裡有 `signin.html` 和 `AGENTS.md`。',
-              '在 ChatGPT 桌面版左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」加入 `AI實作` 資料夾，開一個新對話。',
+              '在 ChatGPT 桌面版左上角「ChatGPT ⌄」選單切到 **Codex**，按「選擇專案」→「新專案」加入 `AI實作` 資料夾（上午已加過就直接選它），開一個新對話。',
               '貼上下面的提示詞。這一步**只讀不改**，最省額度。'
             ] },
             { type: 'prompt', id: 'p-review', title: 'Code Review 與弱點掃描（Codex）', note: 'Codex 版：只讀不改', text:
@@ -877,6 +890,7 @@ F12 Console 的錯誤訊息：[貼上紅字，沒有就寫「沒有錯誤訊息�
 4. 資料外洩：瀏覽器儲存與匯出的 CSV，有沒有多存或多帶不需要的資料？
 5. 邏輯錯誤：沒人報名、名額剛好滿、同名不同員編時，會不會算錯？
 每一項寫：在哪個函式、什麼問題、風險高／中／低、建議怎麼修。` },
+            { type: 'image', name: 'app-review-result.png', alt: 'Codex 的 Code Review 回覆：每一項列出位置、問題、風險等級與建議，並附程式行號連結', caption: 'Codex 版的回報長這樣：每項有位置、問題、風險、建議，點行號會跳到程式。講師實測只讀不改約 50 秒、額度約 1%' },
             { type: 'heading', text: '聊天版（免費）' },
             { type: 'list', ordered: true, items: [
               '在瀏覽器打開 `AI實作/signin.html`，按 `Ctrl + U`（Mac：`Cmd + Option + U`）打開原始碼。',
