@@ -43,7 +43,7 @@ window.COURSE = {
     ],
     // 今天帶走的三樣成果
     deliverables: [
-      ['上午', '休息倒數計時器 `timer.html`', '暖身：從基本版請 AI 加功能，在聊天裡先試再存檔'],
+      ['上午', '休息倒數計時器 `timer.html`', '暖身：在聊天用說的請 AI 做出來，先試再存檔（基本版當備案）'],
       ['下午前段', '規格書 `spec.md`、開發執行計畫 `plan.md`', '把需求寫清楚，給 AI 照著做，也能交給資訊室看'],
       ['下午後段', '教育訓練報名簽到表 `signin.html`', '從基本版補上簽到、出席率、匯出 CSV 三個功能']
     ]
@@ -57,7 +57,7 @@ window.COURSE = {
     { time: '09:30–09:45', minutes: 15, label: '開場：今天會帶走什麼', ref: 'u1-s1', kind: 'teach' },
     { time: '09:45–10:05', minutes: 20, label: '什麼是 Vibe Coding', ref: 'u1-s2', kind: 'teach' },
     { time: '10:05–10:15', minutes: 10, label: '三類 AI 開發工具比較', ref: 'u1-s3', kind: 'teach' },
-    { time: '10:15–10:40', minutes: 25, label: 'ChatGPT 桌面版導覽與暖身：幫計時器加功能', ref: 'u1-s4', kind: 'lab' },
+    { time: '10:15–10:40', minutes: 25, label: 'ChatGPT 桌面版導覽與暖身：用說的做出倒數計時器', ref: 'u1-s4', kind: 'lab' },
     { time: '10:40–10:50', minutes: 10, label: '休息（用自己做的倒數計時器）', ref: null, kind: 'break' },
     { time: '10:50–11:15', minutes: 25, label: '把模糊需求跟 AI 討論清楚', ref: 'u2-s1', kind: 'teach' },
     { time: '11:15–11:40', minutes: 25, label: '認識輕量級資料庫', ref: 'u2-s2', kind: 'teach' },
@@ -234,7 +234,7 @@ window.COURSE = {
       tasks: [
         { id: 'd1-u1-t1', section: 'u1-s4', label: '登入 ChatGPT 桌面版，開一個一般聊天（不是 Codex，切換鈕也不是「工作」）' },
         { id: 'd1-u1-t2', section: 'u1-s4', label: '在桌面建立 `AI實作` 資料夾（下載的檔案都移到這裡）' },
-        { id: 'd1-u1-t3', section: 'u1-s4', label: '貼上計時器基本版，在聊天請 AI 加「5 分鐘」按鈕與時間到變綠色，按 ▷ 在聊天裡先試' },
+        { id: 'd1-u1-t3', section: 'u1-s4', label: '在一般聊天用說的請 AI 做出倒數計時器（含「5 分鐘」按鈕與時間到變綠色），按 ▷ 在聊天裡先試' },
         { id: 'd1-u1-t4', section: 'u1-s4', label: '確認能用後，把程式複製到貼上工具下載成 `timer.html` 並打開' }
       ],
       sections: [
@@ -244,7 +244,7 @@ window.COURSE = {
             { type: 'text', body: '今天只做一件事：**把一個真實的行政痛點，變成一個自己做出來、能用的小系統**。不需要寫過程式，全程用中文跟 AI 對話。' },
             { type: 'heading', text: '今天會帶走三樣東西' },
             { type: 'table', head: ['時間', '你會做出', '用途'], rows: [
-              ['上午', '休息倒數計時器 `timer.html`', '暖身：從基本版請 AI 加功能，在聊天裡先試再存檔'],
+              ['上午', '休息倒數計時器 `timer.html`', '暖身：在聊天用說的請 AI 做出來，先試再存檔（基本版當備案）'],
               ['下午前段', '規格書 `spec.md`、開發執行計畫 `plan.md`', '把需求寫清楚，給 AI 照著做，也能交給資訊室看'],
               ['下午後段', '教育訓練報名簽到表 `signin.html`', '從基本版補上簽到、出席率、匯出 CSV 三個功能']
             ] },
@@ -345,17 +345,29 @@ window.COURSE = {
             { type: 'image', name: 'app-codex.png', alt: 'Codex 畫面：輸入框上方有「選擇專案」，輸入框旁顯示存取權限', caption: 'Codex 畫面：先按「選擇專案」加入資料夾；輸入框旁顯示 Codex 對資料夾的存取權限（講師示範時說明）' },
             { type: 'image', name: 'app-codex-folder.png', alt: '選擇專案的彈出清單，最下方是「新專案」', caption: '「選擇專案」→「新專案」，選桌面的 `AI實作` 資料夾；之後清單裡就會有它' },
             { type: 'note', tone: 'warn', body: '介面會隨版本更新調整，按鈕名稱與位置以講師現場畫面為準。' },
-            { type: 'heading', text: '暖身操作：幫計時器加功能' },
-            { type: 'text', body: '先用貼上工具打開計時器基本版（已經能開始、暫停、重設），再請 AI 加兩個功能。等一下休息 10 分鐘，就用自己改好的計時器倒數。' },
+            { type: 'heading', text: '暖身操作：用說的做出倒數計時器' },
+            { type: 'text', body: '這就是 Vibe Coding：用平常說話的方式講出你要什麼，AI 做出來，你試用；不滿意就再說要改哪裡。等一下休息 10 分鐘，就用自己做的計時器倒數。' },
             { type: 'list', ordered: true, items: [
-              '打開[貼上工具](tool.html?load=timer_基本版.html)，按「預覽」試試看基本版。',
-              '在 ChatGPT 桌面版**開一個一般聊天**（不是 Codex，切換鈕也不是「工作」），貼上下面的提示詞。',
-              '回到貼上工具按「複製程式碼」，貼在提示詞最後一行下面，送出。',
+              '在 ChatGPT 桌面版**開一個一般聊天**（不是 Codex，切換鈕也不是「工作」），貼上下面的提示詞送出。',
               'AI 回覆後**在聊天裡先試**：回覆是程式碼框就按右上角的 ▷，計時器會直接出現在回覆裡（有時會自動出現）；按「5 分鐘」、「開始」看會不會倒數。',
-              '能用就按程式碼框右上角的「複製」→ 回到貼上工具按「清空」→ 貼上 →「下載」，把 `timer.html` 移到 `AI實作` 資料夾，雙擊打開。聊天裡的預覽關掉就沒了，所以一定要下載。'
+              '想改就在同一個聊天接著說，例如「數字再大一點」「背景換成深藍色」；有問題就用下面「有問題時」的提示詞。每個人做出來的樣子不一樣沒關係，下面的驗收項目做到就好。',
+              '能用就按程式碼框右上角的「複製」→ 打開[貼上工具](tool.html)，確認檔名是 `timer.html` → 貼上 →「下載」，把 `timer.html` 移到 `AI實作` 資料夾，雙擊打開。聊天裡的預覽關掉就沒了，所以一定要下載。'
             ] },
-            { type: 'image', name: 'app-preview.png', alt: 'ChatGPT 回覆裡直接顯示可操作的計時器，多了「5 分鐘」按鈕', caption: '按 ▷ 之後，計時器直接在回覆裡跑：先按「5 分鐘」再按「開始」，確認會倒數。講師實測免費方案可用' },
-            { type: 'prompt', id: 'p-warmup-1', title: '幫計時器加兩個功能', note: '暖身：一般聊天，後面接著貼上基本版程式', text:
+            { type: 'prompt', id: 'p-warmup-1', title: '用說的做出休息倒數計時器', note: '暖身：一般聊天，直接貼上送出', text:
+`我是完全不會寫程式的行政人員，想要一個下課休息用的倒數計時器網頁，會投影在教室前面。請幫我做：
+1. 預設倒數 10 分鐘，數字要很大，教室後排也看得清楚
+2. 有「開始」、「暫停」、「重設」三顆按鈕，再加一顆「5 分鐘」按鈕，按了就改成倒數 5 分鐘
+3. 時間到的時候，整個畫面變成綠色，顯示「休息結束，回座囉！」
+4. 畫面文字用繁體中文；做成一個 HTML 檔，CSS 和 JavaScript 都寫在裡面，不要用外部套件
+請回傳完整的程式，放在一個程式碼區塊裡。` },
+            { type: 'image', name: 'app-preview.png', alt: 'ChatGPT 回覆裡直接顯示可操作的計時器，有「5 分鐘」按鈕', caption: '按 ▷ 之後，計時器直接在回覆裡跑：先按「5 分鐘」再按「開始」，確認會倒數。圖是講師的示範，你做出來的樣子會不一樣' },
+            { type: 'text', body: '預覽有問題時，在同一個聊天補一句：' },
+            { type: 'prompt', id: 'p-warmup-2', title: '有問題時', note: '暖身：同一個聊天接著問', text:
+`我在[預覽裡／存成 timer.html 打開後]，[發生了什麼，例如：按「5 分鐘」沒反應]。
+請找出原因並修正，一樣回傳完整的程式，不要省略任何部分。` },
+            { type: 'note', tone: 'ok', body: '**暖身驗收**：計時器可以開始、暫停、重設；有「5 分鐘」按鈕；時間到會變綠色並顯示「休息結束，回座囉！」。' },
+            { type: 'note', tone: 'warn', body: '**備案：AI 做出來的不能用，或越改越亂**——改用講師的基本版（已經能開始、暫停、重設），請 AI 在上面加功能：打開[貼上工具的計時器基本版](tool.html?load=timer_基本版.html)按「複製程式碼」，開一個**新的**一般聊天，貼上下面的提示詞，再把程式貼在最後一行下面送出。還是卡住，就在貼上工具的範本選 `timer_完成版.html` 直接下載使用，不影響後面的課程。' },
+            { type: 'prompt', id: 'p-warmup-base', title: '備案：在基本版上加功能', note: '備案：一般聊天，後面接著貼上基本版程式', text:
 `我是完全不會寫程式的行政人員。下面是一個網頁檔 timer.html 的完整程式，是下課休息倒數計時器。
 請幫我加兩個功能：
 1. 加一顆「5 分鐘」按鈕，按了就把倒數改成 5 分鐘
@@ -363,12 +375,6 @@ window.COURSE = {
 原本的功能不要改。請回傳「完整的」新程式，放在一個程式碼區塊裡，不要省略任何部分。
 
 （在這一行下面貼上 timer.html 的程式）` },
-            { type: 'text', body: '預覽有問題時，在同一個聊天補一句：' },
-            { type: 'prompt', id: 'p-warmup-2', title: '有問題時', note: '暖身：同一個聊天接著問', text:
-`我把你給的程式存成 timer.html 打開後，[發生了什麼，例如：按「5 分鐘」沒反應]。
-請找出原因並修正，一樣回傳完整的程式，不要省略任何部分。` },
-            { type: 'note', tone: 'ok', body: '**暖身驗收**：計時器可以開始、暫停、重設；多了「5 分鐘」按鈕；時間到會變綠色並顯示「休息結束，回座囉！」。' },
-            { type: 'note', tone: 'warn', body: '**卡住時**：貼上工具的範本選 `timer_完成版.html` 直接下載使用，不影響後面的課程。' },
             { type: 'materials', names: ['timer_基本版.html', 'timer_完成版.html'] }
           ]
         }
@@ -895,7 +901,7 @@ function attendanceText(courseId) {
    * file 對應 course-package/materials/ 內的檔名；downloadAs 為下載時的檔名
    * ============================================================ */
   materials: [
-    { id: 'm-timer-base', file: 'timer_基本版.html', name: 'timer_基本版.html', type: 'HTML', saveAs: 'timer.html', section: 'u1-s4', desc: '暖身用的計時器基本版：可以開始、暫停、重設，請 AI 幫你加功能' },
+    { id: 'm-timer-base', file: 'timer_基本版.html', name: 'timer_基本版.html', type: 'HTML', saveAs: 'timer.html', section: 'u1-s4', desc: '暖身備案：計時器基本版（可以開始、暫停、重設）；AI 從零做的不能用時，改請 AI 在這份上加功能' },
     { id: 'm-timer-done', file: 'timer_完成版.html', name: 'timer_完成版.html', type: 'HTML', saveAs: 'timer.html', section: 'u1-s4', desc: '救援用：多了「5 分鐘」按鈕與時間到變綠色' },
     { id: 'm-interview', file: '需求訪談紀錄.md', name: '需求訪談紀錄.md', type: 'MD', section: 'u2-s5', desc: '小芸與張主任的口述需求，整份貼給 AI' },
     { id: 'm-answers', file: '訪談補充回答.md', name: '訪談補充回答.md', type: 'MD', section: 'u2-s5', desc: 'AI 發問後才用：從這裡找答案回覆（刻意分開放，AI 才會真的發問）' },
