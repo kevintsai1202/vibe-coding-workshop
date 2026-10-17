@@ -156,7 +156,7 @@ window.COURSE = {
     safety: '課堂只用講師提供的假資料。不要把真實員工、病人資料、帳號密碼、公司機密貼給 AI。',
     folderTree: `桌面/
 └── AI實作/
-    ├── timer.html         ← 單元一：貼上工具下載
+    ├── timer.html         ← 單元一：聊天預覽的下載圖示存檔後改名（或貼上工具下載）
     ├── signin.html        ← 單元三：先放基本版，再由 Codex 直接補上三個功能
     ├── signin.db          ← 單元三：報名簽到表的資料庫檔（按「連接資料夾」後自動產生）
     ├── AGENTS.md          ← 單元三：網站下載（Codex 開工前會讀）
@@ -184,8 +184,9 @@ window.COURSE = {
     ['雙擊 HTML 用了奇怪的程式打開', '在檔案上按右鍵 → 開啟檔案 → 選 Chrome 或 Edge'],
     ['改了程式，畫面沒變', '瀏覽器按 F5 重新整理'],
     ['報名簽到表的資料不見了（換了瀏覽器或電腦）', '資料在 `AI實作/signin.db`，不在瀏覽器裡。用 Chrome 或 Edge 打開 `signin.html`，按「連接資料夾」選同一個 `AI實作` 就接得上；換電腦就把整個 `AI實作` 資料夾帶過去'],
-    ['上方出現「重新連接資料夾」', '瀏覽器重新打開後，要再允許一次才能讀寫資料夾：按這個按鈕，瀏覽器詢問時選同意（如果有「每次都允許」之類的選項也可以選）'],
-    ['選「桌面」本身時，瀏覽器不讓選', '不要選「桌面」本身，要點進桌面、選裡面的 `AI實作`'],
+    ['上方出現「重新連接資料夾」', '關掉瀏覽器再打開時會這樣（按 F5 不會）：按這個按鈕，問「允許此網站編輯檔案？」時按「允許」'],
+    ['選資料夾時出現「無法開啟此資料夾…因為其包含系統檔案」', '你選到「桌面」本身了：按「選擇其他資料夾」，點一下桌面上的 `AI實作` 再按「選擇資料夾」'],
+    ['不小心按了「不允許」', '資料不會保存：再按一次「連接資料夾」（或「重新連接資料夾」），這次按「允許」'],
     ['選錯資料夾了', '按上方的「換資料夾」，重新選 `AI實作`；畫面上的資料會寫進新選的資料夾'],
     ['出現「存檔失敗」或「找不到資料夾」', '按上方的「重新連接資料夾」或「連接資料夾」重新選 `AI實作`，畫面上的資料會再寫回 `signin.db`'],
     ['`signin.html` 打開是空白頁', '確認有網路（資料庫元件從網路載入）；按 F12 看 Console 紅字，用「錯誤回報四件套」交給 AI'],
@@ -228,14 +229,14 @@ window.COURSE = {
         { name: 'app-switch.png', kind: 'screenshot', status: 'ready', alt: '左上角選單切換 ChatGPT 與 Codex', spec: '左上角「ChatGPT ⌄」下拉選單：ChatGPT 與 Codex 兩個選項' },
         { name: 'app-codex.png', kind: 'screenshot', status: 'ready', alt: 'Codex 畫面', spec: 'Codex 畫面：標出「選擇專案」與輸入框旁的存取權限' },
         { name: 'app-codex-folder.png', kind: 'screenshot', status: 'ready', alt: 'Codex 選擇專案的清單', spec: '「選擇專案」彈出清單：標出「新專案」' },
-        { name: 'app-preview.png', kind: 'screenshot', status: 'ready', alt: '聊天回覆裡直接跑的計時器', spec: '暖身：按 ▷ 後回覆渲染成可操作的計時器，標出「5 分鐘」按鈕' },
+        { name: 'app-preview.png', kind: 'screenshot', status: 'ready', alt: '聊天回覆裡直接跑的計時器', spec: '暖身：用說的生成後按 ▷，回覆渲染成可操作的計時器；標出「5 分鐘」按鈕與預覽框的下載圖示' },
         { name: 'app-usage.png', kind: 'screenshot', status: 'ready', alt: '頭像選單的剩餘用量', spec: '左下角頭像 → 剩餘用量：免費方案按月、顯示剩餘 % 與重置日（姓名打馬賽克）' }
       ],
       tasks: [
         { id: 'd1-u1-t1', section: 'u1-s4', label: '登入 ChatGPT 桌面版，開一個一般聊天（不是 Codex，切換鈕也不是「工作」）' },
         { id: 'd1-u1-t2', section: 'u1-s4', label: '在桌面建立 `AI實作` 資料夾（下載的檔案都移到這裡）' },
         { id: 'd1-u1-t3', section: 'u1-s4', label: '在一般聊天用說的請 AI 做出倒數計時器（含「5 分鐘」按鈕與時間到變綠色），按 ▷ 在聊天裡先試' },
-        { id: 'd1-u1-t4', section: 'u1-s4', label: '確認能用後，把程式複製到貼上工具下載成 `timer.html` 並打開' }
+        { id: 'd1-u1-t4', section: 'u1-s4', label: '確認能用後，按預覽的下載圖示存檔（或用貼上工具），放進 `AI實作` 改名 `timer` 並打開' }
       ],
       sections: [
         {
@@ -351,7 +352,7 @@ window.COURSE = {
               '在 ChatGPT 桌面版**開一個一般聊天**（不是 Codex，切換鈕也不是「工作」），貼上下面的提示詞送出。',
               'AI 回覆後**在聊天裡先試**：回覆是程式碼框就按右上角的 ▷，計時器會直接出現在回覆裡（有時會自動出現）；按「5 分鐘」、「開始」看會不會倒數。',
               '想改就在同一個聊天接著說，例如「數字再大一點」「背景換成深藍色」；有問題就用下面「有問題時」的提示詞。每個人做出來的樣子不一樣沒關係，下面的驗收項目做到就好。',
-              '能用就按程式碼框右上角的「複製」→ 打開[貼上工具](tool.html)，確認檔名是 `timer.html` → 貼上 →「下載」，把 `timer.html` 移到 `AI實作` 資料夾，雙擊打開。聊天裡的預覽關掉就沒了，所以一定要下載。'
+              '能用就按預覽框右上角的**下載圖示**：檔案會存到「下載」資料夾、叫 `preview.html`，把它移到 `AI實作` 資料夾、改名成 `timer`，雙擊打開。沒看到下載圖示，就按程式碼框的「複製」→ 打開[貼上工具](tool.html) → 貼上 →「下載」。聊天裡的預覽關掉就沒了，所以一定要存檔。'
             ] },
             { type: 'prompt', id: 'p-warmup-1', title: '用說的做出休息倒數計時器', note: '暖身：一般聊天，直接貼上送出', text:
 `我是完全不會寫程式的行政人員，想要一個下課休息用的倒數計時器網頁，會投影在教室前面。請幫我做：
@@ -360,7 +361,7 @@ window.COURSE = {
 3. 時間到的時候，整個畫面變成綠色，顯示「休息結束，回座囉！」
 4. 畫面文字用繁體中文；做成一個 HTML 檔，CSS 和 JavaScript 都寫在裡面，不要用外部套件
 請回傳完整的程式，放在一個程式碼區塊裡。` },
-            { type: 'image', name: 'app-preview.png', alt: 'ChatGPT 回覆裡直接顯示可操作的計時器，有「5 分鐘」按鈕', caption: '按 ▷ 之後，計時器直接在回覆裡跑：先按「5 分鐘」再按「開始」，確認會倒數。圖是講師的示範，你做出來的樣子會不一樣' },
+            { type: 'image', name: 'app-preview.png', alt: 'ChatGPT 回覆裡直接顯示可操作的計時器，有「5 分鐘」按鈕', caption: '按 ▷ 之後，計時器直接在回覆裡跑：先按「5 分鐘」再按「開始」，確認會倒數；右上角框起來的下載圖示可以直接存成檔案。2026-10 講師用免費方案實測（你做出來的樣子會不一樣）' },
             { type: 'text', body: '預覽有問題時，在同一個聊天補一句：' },
             { type: 'prompt', id: 'p-warmup-2', title: '有問題時', note: '暖身：同一個聊天接著問', text:
 `我在[預覽裡／存成 timer.html 打開後]，[發生了什麼，例如：按「5 分鐘」沒反應]。
@@ -669,6 +670,8 @@ function attendanceText(courseId) {
         { name: 'u3-prompt.webp', kind: 'diagram', status: 'ready', alt: '四段式指令拆解', spec: '四段式指令（目標、範圍、限制、驗收）拆解一段好提示詞（手繪 SVG）' },
         { name: 'u3-result.png', kind: 'screenshot', status: 'planned', alt: '完成的報名簽到表畫面', spec: '完成的報名簽到表畫面（講師示範版截圖）' },
         // 下午 Codex 實作的 App 截圖（2026-10 免費帳號實測；不計入插圖上限）
+        { name: 'app-fsa-allow.png', kind: 'screenshot', status: 'ready', alt: '允許此網站編輯檔案的提示', spec: '連接資料夾時的權限提示：框出「允許」（深色的是「不允許」）' },
+        { name: 'app-fsa-connected.png', kind: 'screenshot', status: 'ready', alt: '已連接資料庫檔的提醒列', spec: '連接成功的藍色提醒列：AI實作／signin.db 與「換資料夾」；網址列的使用者名稱打馬賽克' },
         { name: 'app-codex-newproject.png', kind: 'screenshot', status: 'ready', alt: '建立專案視窗', spec: 'Codex「新專案」的建立專案視窗：標出專案名稱與來源資料夾的「新增」' },
         { name: 'app-codex-trust.png', kind: 'screenshot', status: 'ready', alt: '信任資料夾確認視窗', spec: '「要信任這個資料夾嗎」：標出「信任資料夾」' },
         { name: 'app-codex-done.png', kind: 'screenshot', status: 'ready', alt: 'Codex 做完的畫面', spec: 'Codex 做完：畫面驗收步驟、已編輯 signin.html +45 −6、查看變更' },
@@ -753,9 +756,11 @@ function attendanceText(courseId) {
             { type: 'heading', text: '先看基本版（5 分）' },
             { type: 'list', ordered: true, items: [
               '在本節最下方的素材按 `signin_基本版.html` 的「下載」（下載的檔名就是 `signin.html`），移到桌面的 `AI實作` 資料夾。',
-              '雙擊 `signin.html` 用 **Chrome 或 Edge** 打開。上方黃色提醒列按「連接資料夾」→ 點進桌面、選 `AI實作` → 按「選擇資料夾」→ 瀏覽器詢問能不能編輯這個資料夾的檔案時，選同意（按鈕文字依瀏覽器版本略有不同）。提醒列變成「已連接資料庫檔：AI實作／signin.db」，資料夾裡多了一個 `signin.db`——這就是資料庫。',
+              '雙擊 `signin.html` 用 **Chrome 或 Edge** 打開。上方黃色提醒列按「連接資料夾」→ 跳出「選取此網站可儲存變更的位置」視窗（會從桌面開始）→ 點一下 `AI實作` → 按「選擇資料夾」→ 問「允許此網站編輯檔案？」時按**「允許」**（顏色比較深的那顆是「不允許」，別按錯）。提醒列變成「已連接資料庫檔：AI實作／signin.db」，資料夾裡多了一個 `signin.db`——這就是資料庫。',
               '照下面逐項點一遍：'
             ] },
+            { type: 'image', name: 'app-fsa-allow.png', alt: '瀏覽器詢問「允許此網站編輯檔案？」，下方有「允許」與顏色較深的「不允許」兩顆按鈕', caption: '選好 AI實作 後會問「允許此網站編輯檔案？」：按「允許」（框起來的那顆）。2026-10 講師用 Edge 實測，Chrome 相同' },
+            { type: 'image', name: 'app-fsa-connected.png', alt: '提醒列變成藍色「已連接資料庫檔：AI實作／signin.db（每次變更自動存檔）」，右邊有「換資料夾」', caption: '連接成功：提醒列變藍色，之後每次變更都自動寫進 AI實作 裡的 signin.db；選錯資料夾按右邊的「換資料夾」' },
             { type: 'list', check: true, items: [
               '兩堂示範課程，消防安全講習顯示 4 / 40 人',
               '新增一堂課，清單立刻出現',
@@ -798,7 +803,7 @@ function attendanceText(courseId) {
               '出席率：消防安全講習 75%（簽到林志明後）、個資保護與資安宣導 0%；新增一堂沒人報名的課 → 顯示「—」',
               '匯出 CSV：在消防安全講習按「匯出 CSV」，用 Excel 打開 → 中文正常、4 筆資料、有簽到狀態與時間'
             ] },
-            { type: 'note', tone: 'ok', body: '**按 F5 重新整理看看**：資料還在。程式在 `signin.html`、資料在 `signin.db`，Codex 改的是程式，不會動到資料庫。上方若出現「重新連接資料夾」，按一下、瀏覽器詢問時同意就好。' },
+            { type: 'note', tone: 'ok', body: '**按 F5 重新整理看看**：資料還在。程式在 `signin.html`、資料在 `signin.db`，Codex 改的是程式，不會動到資料庫。按 F5 會自動接回；只有關掉瀏覽器再打開時，才要按「重新連接資料夾」→「允許」。' },
             { type: 'text', body: '沒通過的項目：在同一個 Codex 對話貼「錯誤回報四件套」（單元二「用 AI 找錯與修正程式碼」的提示詞），最後加一句「只改那個函式」；改完按 F5 再測同一項。' },
             { type: 'note', tone: 'warn', body: '**Codex 額度用完或做不出來？** 在本節素材按 `signin_完成版.html` 的「下載」（檔名也是 `signin.html`），覆蓋 `AI實作` 裡的 `signin.html`（`signin.db` 不用動，資料都還在），接著做後面的驗收與 Code Review，不要再花時間重試。做到一半的也一樣：下載完成版最快。' },
             { type: 'materials', names: ['signin_基本版.html', 'signin_完成版.html'] }
@@ -834,7 +839,7 @@ function attendanceText(courseId) {
           id: 'u3-s5', title: '【實作演練 2-B】測試、除錯與 Code Review', time: '15:55–16:20', minutes: 25, kind: 'lab',
           blocks: [
             { type: 'heading', text: '步驟 1：跑驗收清單（10 分）' },
-            { type: 'text', body: '用 `AI實作` 裡的 `signin.html` 測（上方出現「重新連接資料夾」就按一下，瀏覽器詢問時同意）。先按頁面最下方的「重設為示範資料」，再照《成品驗收清單》逐項測試並打勾；第 12 項要打開 `AI實作` 資料夾，確認有 `signin.db`。' },
+            { type: 'text', body: '用 `AI實作` 裡的 `signin.html` 測（上方出現「重新連接資料夾」就按一下，再按「允許」）。先按頁面最下方的「重設為示範資料」，再照《成品驗收清單》逐項測試並打勾；第 12 項要打開 `AI實作` 資料夾，確認有 `signin.db`。' },
             { type: 'materials', names: ['成品驗收清單.md'] },
             { type: 'text', body: '沒通過的項目：在同一個 Codex 對話貼「錯誤回報四件套」（單元二「用 AI 找錯與修正程式碼」的提示詞），最後加一句「只改那個函式」；改完按 F5 再測同一項。Codex 額度用完的人：把沒過的項目記下來，額度恢復後再修。' },
             { type: 'heading', text: '步驟 2：Code Review 與弱點掃描（10 分）' },
