@@ -403,29 +403,48 @@
         el('div', { class: 'instructor-bio' }, m.instructorBio)));
   }
 
-  /** 全天時程：比例時間軸 + 時程表 */
+  /** 單元落在上午、下午，還是跨過午餐（網站不顯示時間，只說大方向） */
+  function unitPeriod(u) {
+    const lunchAt = C.schedule.findIndex(r => r.kind === 'lunch');
+    const idx = C.schedule.map((r, i) => (r.ref && r.ref.startsWith(u.id + '-') ? i : -1)).filter(i => i >= 0);
+    const am = idx.some(i => i < lunchAt);
+    const pm = idx.some(i => i > lunchAt);
+    return am && pm ? '上午～下午（中間午餐）' : am ? '上午' : pm ? '下午' : '';
+  }
+
+  /** 全天流程：今天動手做的實作＋上午／下午各單元的內容；不列時間與分鐘數（講師現場會調整） */
   function renderSchedule() {
-    const bar = el('div', { class: 'timeline', 'aria-hidden': 'true' }, C.schedule.map(r =>
-      el('div', { class: 'tl-seg tl-' + r.kind, style: 'flex-grow:' + r.minutes, title: r.time + ' ' + r.label },
-        r.minutes >= 20 ? el('span', {}, r.time.split('–')[0]) : null)));
-    const legend = el('div', { class: 'tl-legend' }, ['teach', 'lab', 'break', 'lunch'].map(k =>
-      el('span', { class: 'tl-key' }, el('i', { class: 'tl-dot tl-' + k }), KIND_LABEL[k])));
-    const rows = C.schedule.map(r => {
-      const label = r.ref ? el('a', { href: '#' + r.ref }, r.label) : r.label;
-      return el('tr', { class: 'row-' + r.kind },
-        el('td', { class: 'nowrap' }, r.time),
-        el('td', { class: 'num' }, r.minutes + ' 分'),
-        el('td', {}, label),
-        el('td', {}, el('span', { class: 'kind-badge kind-' + r.kind }, KIND_LABEL[r.kind])));
-    });
-    const teachMinutes = C.schedule.filter(r => r.kind !== 'lunch').reduce((s, r) => s + r.minutes, 0);
-    const labMinutes = C.schedule.filter(r => r.kind === 'lab').reduce((s, r) => s + r.minutes, 0);
-    const table = el('div', { class: 'table-wrap' }, el('table', { class: 't schedule-table' },
-      el('thead', {}, el('tr', {}, el('th', {}, '時間'), el('th', {}, '時長'), el('th', {}, '內容'), el('th', {}, '類型'))),
-      el('tbody', {}, rows)));
-    return chapter('schedule', '全天時程', '10/19（一）09:30～16:30',
-      el('p', { class: 'lead' }, `上課 ${teachMinutes} 分鐘（含休息），其中動手實作 ${labMinutes} 分鐘；12:00～13:00 午餐。`),
-      bar, legend, table);
+    const lunchAt = C.schedule.findIndex(r => r.kind === 'lunch');
+    const unitOf = ref => C.units.find(u => ref.startsWith(u.id + '-'));
+    /** 依單元分組（略過休息與午餐） */
+    const groupByUnit = rows => {
+      const out = [];
+      rows.filter(r => r.ref).forEach(r => {
+        const u = unitOf(r.ref);
+        if (!out.length || out[out.length - 1].unit !== u) out.push({ unit: u, rows: [] });
+        out[out.length - 1].rows.push(r);
+      });
+      return out;
+    };
+    /** 半天：標題（上午／下午）＋各單元的項目，實作項目加標籤 */
+    const half = (label, rows) => el('div', { class: 'flow-half' },
+      el('div', { class: 'flow-half-label' }, label),
+      groupByUnit(rows).map(g => el('div', { class: 'flow-unit' },
+        el('a', { class: 'flow-unit-title', href: '#' + g.unit.id }, g.unit.short),
+        el('ul', { class: 'flow-items' }, g.rows.map(r => el('li', { class: r.kind === 'lab' ? 'is-lab' : '' },
+          r.kind === 'lab' ? el('span', { class: 'kind-badge kind-lab' }, KIND_LABEL.lab) : null,
+          el('a', { href: '#' + r.ref }, r.label)))))));
+    const labs = C.schedule.filter(r => r.kind === 'lab');
+    const labBox = el('div', { class: 'flow-labs' },
+      el('div', { class: 'box-label' }, '今天動手做的'),
+      el('ol', { class: 'flow-lab-list' }, labs.map(r => el('li', {}, el('a', { href: '#' + r.ref }, r.label)))));
+    return chapter('schedule', '全天流程', '10/19（一）',
+      el('p', { class: 'lead' }, '上午打好觀念，做一個暖身小工具；下午把需求寫成規格書，再用 Codex 做出能用的報名簽到表。中間安排休息與午餐，各段時間由講師現場安排。'),
+      labBox,
+      el('div', { class: 'flow' },
+        half('上午', C.schedule.slice(0, lunchAt)),
+        el('div', { class: 'flow-lunch' }, '午餐'),
+        half('下午', C.schedule.slice(lunchAt + 1))));
   }
 
   /** 共用案例：情境、人物、要做的東西、資料表、規則 */
@@ -469,7 +488,7 @@
     const hero = el('div', { class: 'unit-hero' },
       el('div', { class: 'unit-numeral', 'aria-hidden': 'true' }, String(u.n).padStart(2, '0')),
       el('div', { class: 'unit-hero-meta' },
-        el('div', { class: 'eyebrow' }, `${u.time} · ${u.minutes} 分${u.note ? '（' + u.note + '）' : ''}`),
+        el('div', { class: 'eyebrow' }, unitPeriod(u)),
         el('h2', { class: 'chapter-title' }, u.title),
         tasks.length ? el('span', { class: 'progress-pill', 'data-unit-pill': u.id }, '') : null));
     const brochure = el('div', { class: 'brochure-box' },
@@ -485,13 +504,11 @@
     return root;
   }
 
-  /** 時段：標頭（時間、類型、時長）、內容區塊、該時段的任務 */
+  /** 時段：標頭（講授／實作、標題，不列時間）、內容區塊、該時段的任務 */
   function renderSection(u, s) {
     const head = el('header', { class: 'seg-head' },
       el('div', { class: 'seg-meta' },
-        el('span', { class: 'time-chip' }, s.time),
-        el('span', { class: 'kind-badge kind-' + s.kind }, KIND_LABEL[s.kind]),
-        el('span', { class: 'seg-min' }, s.minutes + ' 分')),
+        el('span', { class: 'kind-badge kind-' + s.kind }, KIND_LABEL[s.kind])),
       el('h3', { class: 'seg-title' }, s.title));
     const body = el('div', { class: 'seg-body' }, s.blocks.map(b => renderBlock(b)));
     const tasks = (u.tasks || []).filter(t => t.section === s.id);
@@ -711,7 +728,7 @@
     const link = (target, label, cls, extra) => el('a', { class: 'nav-link ' + (cls || ''), href: '#' + target, 'data-target': target }, label, extra || null);
     const items = [
       link('overview', '課程總覽'),
-      link('schedule', '全天時程'),
+      link('schedule', '全天流程'),
       link('case', '共用案例'),
       link('prep', '課前準備'),
       el('a', { class: 'nav-link nav-tool', href: 'tool.html', target: '_blank', rel: 'noopener' }, '🛠 貼上工具')
@@ -720,7 +737,7 @@
       items.push(el('div', { class: 'nav-group' },
         link(u.id, u.short, 'nav-unit', el('span', { class: 'nav-pill', 'data-nav-pill': u.id })),
         el('div', { class: 'nav-sub' }, u.sections.map(s =>
-          link(s.id, [el('span', { class: 'nav-time' }, s.time.split('–')[0]), el('span', { class: 'nav-sub-title' }, s.title)], 'nav-seg' + (s.kind === 'lab' ? ' is-lab' : ''))))));
+          link(s.id, el('span', { class: 'nav-sub-title' }, s.title), 'nav-seg' + (s.kind === 'lab' ? ' is-lab' : ''))))));
     });
     items.push(link('materials', '課堂素材'), link('quiz-review', '互動題回顧'), link('faq', '常見狀況'));
     nav.replaceChildren(...items);

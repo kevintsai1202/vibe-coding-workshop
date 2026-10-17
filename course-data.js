@@ -68,7 +68,7 @@ window.COURSE = {
     { time: '14:05–14:15', minutes: 10, label: '休息', ref: null, kind: 'break' },
     { time: '14:15–14:35', minutes: 20, label: '精準指令與減少 AI 亂編', ref: 'u3-s1', kind: 'teach' },
     { time: '14:35–14:45', minutes: 10, label: '控制對話長度、幫專案立規矩', ref: 'u3-s2', kind: 'teach' },
-    { time: '14:45–15:35', minutes: 50, label: '【實作演練 2-A】從基本版補上三個功能', ref: 'u3-s3', kind: 'lab' },
+    { time: '14:45–15:35', minutes: 50, label: '【實作演練 2-A】用 Codex 做出報名簽到表', ref: 'u3-s3', kind: 'lab' },
     { time: '15:35–15:45', minutes: 10, label: '休息', ref: null, kind: 'break' },
     { time: '15:45–15:55', minutes: 10, label: '自動測試、Code Review 與弱點掃描', ref: 'u3-s4', kind: 'teach' },
     { time: '15:55–16:20', minutes: 25, label: '【實作演練 2-B】測試、Code Review、修正', ref: 'u3-s5', kind: 'lab' },
@@ -347,7 +347,7 @@ window.COURSE = {
             { type: 'image', name: 'app-codex-folder.png', alt: '選擇專案的彈出清單，最下方是「新專案」', caption: '「選擇專案」→「新專案」，選桌面的 `AI實作` 資料夾；之後清單裡就會有它' },
             { type: 'note', tone: 'warn', body: '介面會隨版本更新調整，按鈕名稱與位置以講師現場畫面為準。' },
             { type: 'heading', text: '暖身操作：用說的做出倒數計時器' },
-            { type: 'text', body: '這就是 Vibe Coding：用平常說話的方式講出你要什麼，AI 做出來，你試用；不滿意就再說要改哪裡。等一下休息 10 分鐘，就用自己做的計時器倒數。' },
+            { type: 'text', body: '這就是 Vibe Coding：用平常說話的方式講出你要什麼，AI 做出來，你試用；不滿意就再說要改哪裡。等一下休息時，就用自己做的計時器倒數。' },
             { type: 'list', ordered: true, items: [
               '在 ChatGPT 桌面版**開一個一般聊天**（不是 Codex，切換鈕也不是「工作」），貼上下面的提示詞送出。',
               'AI 回覆後**在聊天裡先試**：回覆是程式碼框就按右上角的 ▷，計時器會直接出現在回覆裡（有時會自動出現）；按「5 分鐘」、「開始」看會不會倒數。',

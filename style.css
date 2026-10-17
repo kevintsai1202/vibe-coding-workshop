@@ -199,7 +199,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .nav-pill.complete { background: var(--success-soft); color: var(--success); border-color: transparent; }
 .nav-sub { margin-left: 10px; border-left: 1px solid var(--border); padding-left: 4px; }
 .nav-seg { font-size: 13px; font-weight: 500; align-items: flex-start; padding: 4px 8px; }
-.nav-time { font-family: var(--font-mono); font-size: 11px; color: var(--muted); flex: none; padding-top: 2px; width: 38px; }
 .nav-sub-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .nav-seg.is-lab .nav-sub-title { color: var(--accent-2-deep); font-weight: 700; }
 .nav-tool { margin-top: 4px; justify-content: space-between; color: var(--accent-2-deep); font-weight: 800; }
@@ -335,17 +334,20 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .instructor-name { font-weight: 800; }
 .instructor-bio { font-size: 14px; color: var(--muted); }
 
-/* ===================== 時程 ===================== */
-.timeline { display: flex; height: 34px; border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--border); margin: 8px 0 8px; }
-.tl-seg { min-width: 3px; display: flex; align-items: center; padding-left: 5px; font-size: 11px; font-family: var(--font-mono); color: var(--fg); border-right: 1px solid var(--surface); overflow: hidden; white-space: nowrap; }
-.tl-teach { background: var(--accent-soft); }
-.tl-lab { background: color-mix(in oklab, var(--accent-2) 45%, var(--surface)); }
-.tl-break { background: var(--surface-2); }
-.tl-lunch { background: var(--success-soft); }
-.tl-legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
-.tl-key { display: inline-flex; align-items: center; gap: 6px; }
-.tl-dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--border-strong); display: inline-block; }
-.schedule-table .row-break td, .schedule-table .row-lunch td { color: var(--muted); }
+/* ===================== 全天流程（不列時間） ===================== */
+.flow-labs { margin: 10px 0 18px; padding: 14px 18px; border-radius: var(--r-md); background: var(--accent-2-soft); border: 1px solid color-mix(in oklab, var(--accent-2) 35%, var(--border)); }
+.flow-lab-list { margin: 0; padding-left: 22px; font-weight: 700; }
+.flow-lab-list li + li { margin-top: 4px; }
+.flow-lab-list a { color: var(--accent-2-deep); }
+.flow { display: grid; gap: 12px; }
+.flow-half { padding: 14px 18px; border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface); }
+.flow-half-label { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+.flow-unit + .flow-unit { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.flow-unit-title { display: inline-block; font-weight: 800; margin-bottom: 4px; }
+.flow-items { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.flow-items li { display: inline-flex; align-items: center; gap: 6px; }
+.flow-items li.is-lab a { color: var(--accent-2-deep); font-weight: 700; }
+.flow-lunch { text-align: center; font-size: 13px; font-weight: 700; color: var(--success); padding: 6px; border-radius: var(--r-sm); background: var(--success-soft); }
 .kind-badge { display: inline-block; font-size: 12px; font-weight: 800; padding: 1px 9px; border-radius: 999px; white-space: nowrap; }
 .kind-teach { background: var(--accent-soft); color: var(--accent-deep); }
 .kind-lab { background: var(--accent-2-soft); color: var(--accent-2-deep); }
@@ -388,8 +390,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .seg-lab { border-color: color-mix(in oklab, var(--accent-2) 55%, var(--border)); box-shadow: 0 0 0 3px var(--accent-2-soft); }
 .seg-head { padding: 16px 20px 10px; border-bottom: 1px solid var(--border); }
 .seg-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 6px; }
-.time-chip { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--muted); }
-.seg-min { font-size: 12px; color: var(--muted); }
 .seg-body { padding: 12px 20px 8px; }
 .block-heading { margin: 20px 0 8px; padding-left: 10px; border-left: 3px solid var(--accent); }
 .seg-body > .block-heading:first-child { margin-top: 6px; }
@@ -555,7 +555,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .modal-backdrop { padding: 0; }
   .modal { max-height: 100vh; height: 100vh; border-radius: 0; }
   .modal-body { padding: 14px 16px 24px; }
-  .timeline span { display: none; }
 }
 
 /* ===================== 列印 ===================== */
