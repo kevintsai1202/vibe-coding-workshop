@@ -1,102 +1,150 @@
 <!doctype html>
 <!--
-  index.html — 教學網站外殼
-  內容全部在 course-data.js（window.COURSE），畫面與互動在 app.js，樣式在 style.css。
-  本機預覽請用 npm run serve（file:// 下無法預覽素材）。
+  index.html — 講師介紹首頁（根網址）
+  開課先投影這一頁，再按「進入課程」到 course.html（課程頁，2026-10-18 前叫 index.html）。
+  獨立靜態頁：不載入 course-data.js／app.js；樣式用 style.css 的 tokens ＋ intro.css。
+  外部網址的單一來源是 scripts/lib/intro-links.mjs，改網址時兩邊都要改（npm run verify 會比對）。
+  照片、QR Code、專案截圖在 assets/intro/，由 scripts/build-intro-assets.mjs、capture-projects.mjs 產生。
 -->
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>生成式AI程式開發與Vibe Coding實務｜教學網站</title>
-  <meta name="description" content="工研院產業學院 6 小時課程：用 ChatGPT 桌面版指揮 AI，把教育訓練報名簽到的需求做成一個能用的小系統。" />
   <script>
-    // 先套用上次選的主題，避免頁面先閃一下淺色
+    // 舊連結相容：改名前分享出去的「…/#u3-s3」要直接到課程頁的同一個位置
+    // #projects 是本頁「跳到近期作品」的錨點，不轉址
+    if (location.hash.length > 1 && location.hash !== '#projects') location.replace('course.html' + location.hash);
+    // 深色模式沿用課程頁的設定（同一個 localStorage key，只讀不寫）
     try {
       var saved = JSON.parse(localStorage.getItem('vibe-tn-20261021-v1') || '{}');
       if (saved.theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
     } catch (e) { /* localStorage 不可用時維持淺色 */ }
   </script>
+  <title>講師介紹｜凱文大叔｜生成式AI程式開發與Vibe Coding實務</title>
+  <meta name="description" content="講師凱文大叔：上市公司 MIS 主管、20 年以上 Java 開發經驗，近年專注 AI 應用。YouTube、Facebook 與近期專案。" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="intro.css">
 </head>
-<body>
-  <a class="skip-link" href="#content">跳到主要內容</a>
-  <div class="app" id="app">
+<body class="intro-page">
+  <a class="skip-link" href="#projects">跳到近期作品</a>
 
-    <!-- 側欄：課程導覽與進度 -->
-    <aside class="sidebar" id="sidebar" aria-label="課程導覽">
-      <div class="brand">
-        <div class="brand-eyebrow">工研院產業學院｜台南學習中心</div>
-        <div class="brand-title">生成式AI程式開發與Vibe Coding實務</div>
-        <div class="brand-meta" id="brandMeta"></div>
-      </div>
-      <nav class="nav" id="nav"></nav>
-      <div class="nav-progress" id="navProgress"></div>
-    </aside>
-    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
-    <!-- 主內容 -->
-    <main class="main">
-      <header class="topbar">
-        <button class="icon-btn" id="menuToggle" type="button" aria-label="開關課程導覽" aria-controls="sidebar">☰</button>
-        <div class="topbar-trail" id="topbarTrail"></div>
-        <div class="topbar-tools">
-          <div class="zoom-group" role="group" aria-label="內容縮放">
-            <button class="icon-btn" id="zoomOut" type="button" aria-label="縮小字級">A−</button>
-            <span class="zoom-label" id="zoomLabel">100%</span>
-            <button class="icon-btn" id="zoomIn" type="button" aria-label="放大字級">A+</button>
-          </div>
-          <button class="icon-btn" id="themeToggle" type="button" aria-label="切換深色／淺色">🌙</button>
-        </div>
-      </header>
-
-      <div class="content" id="content" tabindex="-1">
-        <noscript><p>這個網站需要開啟 JavaScript 才能顯示課程內容。</p></noscript>
-      </div>
-
-      <footer class="footer">
-        <p>主辦：財團法人工業技術研究院產業學院｜本教材嚴禁轉印、轉送、轉傳、分享他人。</p>
-        <p>課程中的晴川醫院、人物與資料皆為虛構，僅供教學練習。</p>
-      </footer>
-    </main>
-  </div>
-
-  <!-- 素材預覽彈窗 -->
-  <div class="modal-backdrop" id="modalBackdrop" hidden>
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head">
-        <div class="modal-title" id="modalTitle"></div>
-        <button class="btn btn-soft" id="modalCopy" type="button">複製全文</button>
-        <a class="btn btn-soft" id="modalDownload" href="#" download>下載</a>
-        <button class="icon-btn" id="modalClose" type="button" aria-label="關閉">✕</button>
-      </div>
-      <div class="modal-body" id="modalBody">
-        <div class="md-content" id="modalContent"></div>
-      </div>
+  <!-- 頂列：課程名稱與進入課程的捷徑 -->
+  <header class="intro-top">
+    <div class="intro-course">
+      <span class="intro-eyebrow">工研院產業學院｜台南學習中心</span>
+      <span class="intro-course-title">生成式AI程式開發與Vibe Coding實務</span>
     </div>
-  </div>
+    <a class="btn intro-top-cta" href="course.html">進入課程 →</a>
+  </header>
 
-  <!-- 貼上工具彈窗：iframe 內嵌 tool.html?embed=1，關掉後回到原本讀到的位置 -->
-  <div class="modal-backdrop tool-backdrop" id="toolBackdrop" hidden>
-    <div class="modal tool-modal" role="dialog" aria-modal="true" aria-labelledby="toolTitle">
-      <div class="modal-head">
-        <div class="modal-title" id="toolTitle">🛠 貼上工具</div>
-        <span class="muted tool-hint">關掉後會回到原本讀到的地方，貼上的內容會保留</span>
-        <a class="btn btn-ghost" id="toolNewTab" href="tool.html" target="_blank" rel="noopener">另開分頁</a>
-        <button class="icon-btn" id="toolClose" type="button" aria-label="關閉貼上工具">✕</button>
+  <main class="intro-main">
+    <!-- 講師：照片、簡介、頻道 -->
+    <section class="intro-hero" aria-labelledby="introName">
+      <img class="intro-avatar" src="assets/intro/avatar.webp" width="480" height="480" alt="凱文大叔的頭像插畫：戴眼鏡、穿藍色 Polo 衫" />
+
+      <div class="intro-who">
+        <p class="intro-eyebrow">今天的講師</p>
+        <h1 class="intro-name" id="introName">凱文大叔</h1>
+        <p class="intro-tagline">上市公司 MIS 主管 · 20 年以上 Java 開發 · 近年專注 AI 應用</p>
+        <p class="intro-bio">長年在企業裡開發系統，近幾年把力氣放在讓 AI 真正進到工作流程：語言模型整合、RAG 知識庫與智能化工作流程。</p>
+        <ul class="intro-tags" aria-label="專長">
+          <li>語言模型整合</li>
+          <li>RAG 知識庫</li>
+          <li>智能化工作流程</li>
+          <li>Java／Spring Boot</li>
+        </ul>
+        <p class="intro-book">著作《使用 Spring AI 打造企業 RAG 知識庫》</p>
       </div>
-      <iframe class="tool-frame" id="toolFrame" title="貼上工具" allow="clipboard-read; clipboard-write"></iframe>
-    </div>
-  </div>
 
-  <!-- 提示訊息 -->
-  <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+      <!-- 頻道：投影時讓學員用手機掃 QR Code -->
+      <div class="intro-channels" aria-label="社群頻道">
+        <a class="channel channel-yt" href="https://www.youtube.com/@pg-kt" target="_blank" rel="noopener">
+          <img class="channel-qr" src="assets/intro/qr-youtube.svg" width="160" height="160" alt="YouTube 頻道「凱文大叔AI程式設計教室」的 QR Code" />
+          <span class="channel-platform">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="currentColor"/><path d="M10 9l5 3-5 3z" fill="#fff"/></svg>
+            YouTube
+          </span>
+          <span class="channel-name">凱文大叔AI程式設計教室</span>
+          <span class="channel-handle">@pg-kt</span>
+        </a>
+        <a class="channel channel-fb" href="https://www.facebook.com/profile.php?id=61564137718583" target="_blank" rel="noopener">
+          <img class="channel-qr" src="assets/intro/qr-facebook.svg" width="160" height="160" alt="Facebook 粉絲專頁「凱文大叔教你寫程式」的 QR Code" />
+          <span class="channel-platform">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M13.2 19v-6h2l.3-2.4h-2.3V9.2c0-.7.2-1.2 1.2-1.2h1.2V5.9c-.2 0-1-.1-1.8-.1-1.8 0-3 1.1-3 3.1v1.7h-2V13h2v6z" fill="#fff"/></svg>
+            Facebook
+          </span>
+          <span class="channel-name">凱文大叔教你寫程式</span>
+          <span class="channel-handle">粉絲專頁</span>
+        </a>
+      </div>
+    </section>
 
-  <script src="course-data.js"></script>
-  <script src="demos.js"></script>
-  <script src="app.js"></script>
+    <!-- 近期專案：截圖由 scripts/capture-projects.mjs 產生 -->
+    <section class="intro-projects" id="projects" aria-labelledby="projectsTitle">
+      <div class="projects-head">
+        <h2 id="projectsTitle">近期作品</h2>
+        <p>今天要教的 Vibe Coding，我自己每天都在用。這四個都是最近和 AI 一起做出來、已經上線的作品，點卡片就能打開。</p>
+      </div>
+      <ul class="project-grid">
+        <li>
+          <a class="project" href="https://kevintsai1202.github.io/learning-game" target="_blank" rel="noopener">
+            <img class="project-shot" src="assets/intro/project-learning-game.webp" width="1200" height="750" loading="lazy" alt="知識島大冒險首頁：3D 小島上有城堡、高塔與商店，中間是「建立角色」按鈕" />
+            <span class="project-body">
+              <span class="project-kind">3D 學習遊戲</span>
+              <span class="project-title">知識島大冒險</span>
+              <span class="project-desc">給國小二年級的遊戲化學習網站：在 3D 小島上走進建築，玩國語、數學、英語、生活各科小遊戲，題目依 108 課綱編寫。</span>
+              <span class="project-url">kevintsai1202.github.io/learning-game ↗</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="project" href="https://subtutor.zeabur.app" target="_blank" rel="noopener">
+            <img class="project-shot" src="assets/intro/project-subtutor.webp" width="1200" height="750" loading="lazy" alt="字導字演 SubTutor 首頁：大標「改字，即剪輯。」與剪輯軟體畫面" />
+            <span class="project-body">
+              <span class="project-kind">影片剪輯工具</span>
+              <span class="project-title">字導字演 SubTutor</span>
+              <span class="project-desc">用逐字稿剪影片的 Windows 桌面工作台：刪掉一個字，畫面、聲音、字幕一起剪；AI 校稿、自動裁掉停頓，念錯的詞用自己的聲音重講。</span>
+              <span class="project-url">subtutor.zeabur.app ↗</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="project" href="https://kevintsai1202.github.io/battle-tops" target="_blank" rel="noopener">
+            <img class="project-shot" src="assets/intro/project-battle-tops.webp" width="1200" height="750" loading="lazy" alt="戰鬥陀螺標題畫面：電腦對戰、試驗模式、線上對戰、操作教學" />
+            <span class="project-body">
+              <span class="project-kind">網頁對戰遊戲</span>
+              <span class="project-title">戰鬥陀螺 Battle Tops</span>
+              <span class="project-desc">瀏覽器上的陀螺對戰：電腦對戰、線上找朋友對戰、試驗模式比較零件搭配；拉條發射、必殺技，中文、日文、英文介面。</span>
+              <span class="project-url">kevintsai1202.github.io/battle-tops ↗</span>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a class="project" href="https://law-graph-webmcp.zeabur.app" target="_blank" rel="noopener">
+            <img class="project-shot" src="assets/intro/project-law-graph.webp" width="1200" height="750" loading="lazy" alt="法律關係圖首頁：「你想做什麼？」下方有案件分析與合約法規審查兩張卡片" />
+            <span class="project-body">
+              <span class="project-kind">法律 AI · WebMCP</span>
+              <span class="project-title">Law Graph 法律關係圖</span>
+              <span class="project-desc">與你的 Agent 一起建構台灣法律關係圖：描述糾紛，找法條與判決、逐要件涵攝、產出書狀與關係圖；也能逐條審查合約風險。</span>
+              <span class="project-url">law-graph-webmcp.zeabur.app ↗</span>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 進入課程 -->
+    <section class="intro-cta" aria-label="進入課程">
+      <a class="btn intro-cta-btn" href="course.html">進入今天的課程 →</a>
+      <p class="intro-cta-note">生成式AI程式開發與Vibe Coding實務：用 ChatGPT 桌面版指揮 AI，把教育訓練報名簽到做成一個能用的小系統。</p>
+    </section>
+  </main>
+
+  <footer class="footer intro-footer">
+    <p>主辦：財團法人工業技術研究院產業學院</p>
+  </footer>
 </body>
 </html>

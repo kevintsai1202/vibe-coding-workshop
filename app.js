@@ -15,7 +15,7 @@
   const C = window.COURSE;
   /** localStorage key；結構改版時遞增尾碼，不要沿用舊 key。其中的 20261021 只是識別字，不是開課日，不隨開課日更名（更名會清掉學員已勾的進度） */
   const STORE_KEY = 'vibe-tn-20261021-v1';
-  /** 素材檔案所在路徑（相對於 index.html） */
+  /** 素材檔案所在路徑（相對於 course.html） */
   const MATERIAL_BASE = 'course-package/materials/';
   /** 插圖所在路徑（muse-image 生成的 webp） */
   const ILLUSTRATION_BASE = 'assets/illustrations/';
@@ -940,7 +940,7 @@
       document.getElementById('modalBody').scrollTop = 0;
     } catch (e) {
       content.replaceChildren(el('p', {}, '素材載入失敗，請改用「下載」按鈕。'),
-        el('p', { class: 'muted' }, '若是直接雙擊 index.html 開啟，請改用 npm run serve 啟動本機網站。'));
+        el('p', { class: 'muted' }, '若是直接雙擊 course.html 開啟，請改用 npm run serve 啟動本機網站。'));
     }
   }
 

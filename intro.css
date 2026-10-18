@@ -1,0 +1,111 @@
+/* ============================================================
+ * intro.css — 講師介紹首頁（index.html）專用樣式
+ * 顏色、字型、圓角一律用 style.css 的 :root tokens；深色模式只靠 tokens 切換，不另寫深色樣式。
+ * 主要使用情境是教室投影（1920×1080）：字級放大、QR Code 夠大讓後排也掃得到；手機版改成單欄。
+ * ============================================================ */
+
+/* 版面寬度：投影時四張專案卡排一列 */
+.intro-page { --intro-max: 1360px; }
+
+/* ---------- 頂列 ---------- */
+.intro-top {
+  max-width: var(--intro-max); margin: 0 auto; padding: 20px 32px 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.intro-course { display: flex; flex-direction: column; line-height: 1.4; min-width: 0; }
+.intro-eyebrow { font-size: 13px; letter-spacing: 0.08em; color: var(--accent); font-weight: 800; margin: 0; }
+.intro-course-title { font-size: 17px; font-weight: 800; color: var(--fg); }
+.intro-top-cta { flex: none; }
+
+.intro-main { max-width: var(--intro-max); margin: 0 auto; padding: 0 32px; }
+
+/* ---------- 講師 ---------- */
+.intro-hero {
+  display: grid; grid-template-columns: 220px minmax(0, 1fr) auto; gap: 40px; align-items: center;
+  padding: 36px 0 32px; border-bottom: 1px solid var(--border);
+}
+.intro-avatar { width: 220px; height: 220px; border-radius: 50%; display: block; filter: var(--img-filter); }
+.intro-name { font-size: 52px; line-height: 1.15; font-weight: 800; margin: 4px 0 8px; letter-spacing: 0.02em; }
+.intro-tagline { font-size: 20px; font-weight: 700; color: var(--accent-2-deep); margin: 0 0 10px; }
+.intro-bio { font-size: 17px; color: var(--muted); margin: 0 0 12px; max-width: 46em; }
+.intro-tags { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.intro-tags li {
+  font-size: 14px; font-weight: 700; padding: 3px 12px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent-deep);
+}
+.intro-book { font-size: 15px; color: var(--fg); margin: 0; }
+
+/* 頻道卡：QR 固定白底（深色模式也維持高對比，手機才掃得到） */
+.intro-channels { display: flex; gap: 16px; }
+.channel {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; width: 196px;
+  padding: 14px 14px 12px; border: 1px solid var(--border); border-radius: var(--r-lg);
+  background: var(--surface); color: var(--fg); text-align: center; line-height: 1.4;
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+.channel:hover { text-decoration: none; border-color: var(--accent); box-shadow: var(--shadow-lift); }
+.channel-qr { width: 160px; height: 160px; display: block; background: #fff; border-radius: var(--r-sm); margin-bottom: 8px; }
+.channel-platform { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 800; }
+.channel-platform svg { width: 20px; height: 20px; }
+.channel-yt .channel-platform { color: var(--danger); }
+.channel-fb .channel-platform { color: var(--accent); }
+.channel-name { font-size: 14px; font-weight: 700; }
+.channel-handle { font-size: 13px; color: var(--muted); }
+
+/* ---------- 近期作品 ---------- */
+.intro-projects { padding: 28px 0 8px; }
+.projects-head { display: flex; align-items: baseline; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
+.projects-head h2 { font-size: 28px; font-weight: 800; margin: 0; }
+.projects-head p { font-size: 16px; color: var(--muted); margin: 0; }
+.project-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.project {
+  display: flex; flex-direction: column; height: 100%; overflow: hidden;
+  border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); color: var(--fg);
+  transition: border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+.project:hover { text-decoration: none; border-color: var(--accent); box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+.project-shot { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-bottom: 1px solid var(--border); filter: var(--img-filter); }
+.project-body { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px 16px; flex: 1; line-height: 1.55; }
+.project-kind { font-size: 12px; font-weight: 800; letter-spacing: 0.06em; color: var(--accent-2-deep); }
+.project-title { font-size: 19px; font-weight: 800; }
+.project-desc { font-size: 14.5px; color: var(--muted); flex: 1; }
+.project-url { font-size: 13px; font-weight: 700; color: var(--accent); margin-top: 6px; overflow-wrap: anywhere; }
+
+/* ---------- 進入課程 ---------- */
+.intro-cta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; padding: 28px 0 32px; }
+.intro-cta-btn { min-height: 56px; padding: 10px 32px; font-size: 20px; border-radius: var(--r-md); }
+.intro-cta-note { font-size: 15px; color: var(--muted); margin: 0; flex: 1; min-width: 16em; }
+.intro-footer { max-width: var(--intro-max); padding: 0 32px 32px; }
+
+/* 鍵盤焦點：卡片與按鈕都要看得到 */
+.intro-page a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- 窄螢幕 ---------- */
+@media (max-width: 1200px) {
+  .intro-hero { grid-template-columns: 180px minmax(0, 1fr); }
+  .intro-avatar { width: 180px; height: 180px; }
+  .intro-channels { grid-column: 1 / -1; justify-content: center; }
+  .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 768px) {
+  .intro-top { padding: 14px 16px 0; }
+  .intro-course-title { font-size: 15px; }
+  .intro-main { padding: 0 16px; }
+  .intro-hero { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 20px; padding: 24px 0; }
+  .intro-avatar { width: 140px; height: 140px; }
+  .intro-name { font-size: 38px; }
+  .intro-tagline { font-size: 17px; }
+  .intro-bio { font-size: 16px; }
+  .intro-tags { justify-content: center; }
+  .intro-channels { flex-wrap: wrap; }
+  .channel { width: min(196px, calc(50vw - 24px)); }
+  .channel-qr { width: 100%; height: auto; aspect-ratio: 1; }
+  .project-grid { grid-template-columns: 1fr; }
+  .intro-cta { justify-content: center; text-align: center; }
+  .intro-cta-btn { width: 100%; }
+  .intro-footer { padding: 0 16px 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .channel, .project { transition: none; }
+  .project:hover { transform: none; }
+}
